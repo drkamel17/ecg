@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <title>ECG IA Hospitalier Structuré</title>
 
 <style>
@@ -129,25 +130,61 @@ button:hover{
 }
 
 @media (max-width: 480px){
-    body{padding:8px;font-size:13px;}
+    body{
+        padding:5px;
+        font-size:12px;
+        margin:0;
+        width:100%;
+    }
     
-    h1{font-size:20px;}
+    h1{font-size:18px;margin:5px 0;}
     
-    .section{padding:8px;margin-bottom:8px;}
+    .section{
+        padding:8px;
+        margin-bottom:6px;
+        border-radius:8px;
+    }
     
-    label{min-width:80px;margin:4px 5px 4px 0;}
+    .section h3{font-size:14px;padding-bottom:3px;}
     
-    input,select{padding:5px;margin:4px;}
+    label{
+        min-width:70px;
+        margin:3px 5px 3px 0;
+        font-size:11px;
+    }
     
-    #hexCanvas{width:200px;height:200px;}
+    input,select{
+        padding:4px;
+        margin:3px;
+        font-size:11px;
+    }
     
-    #axisText{padding:8px;font-size:12px;}
+    #hexCanvas{width:180px;height:180px;}
     
-    button{padding:10px;font-size:14px;}
+    #axisText{padding:6px;font-size:10px;}
     
-    .radio-group{flex-direction:column;gap:8px;}
+    button{
+        padding:10px;
+        font-size:13px;
+        margin-top:8px;
+    }
     
-    .radio-group label{width:100%;text-align:center;}
+    .radio-group{flex-direction:column;gap:5px;}
+    
+    .radio-group label{
+        width:100%;
+        text-align:center;
+        padding:8px;
+        font-size:11px;
+    }
+    
+    .grid{grid-template-columns:1fr;}
+    
+    .info-text{font-size:9px;}
+    
+    .urgency-red{font-size:16px;}
+    .urgency-orange{font-size:14px;}
+    .urgency-green{font-size:14px;}
 }
 
 .rhythm-box{
