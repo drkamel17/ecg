@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>ECG IA Hospitalier Structuré</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#0b1020;
+    color:#e0e0e0;
+    padding:20px;
+    max-width:1200px;
+    margin:0 auto;
+}
+
+h1{
+    text-align:center;
+    color:#22c55e;
+}
+
+.section{
+    background:#121a33;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:10px;
+}
+
+.section h3{
+    margin-top:0;
+    color:#22c55e;
+    border-bottom:1px solid #22c55e;
+    padding-bottom:5px;
+}
+
+label{
+    display:inline-block;
+    margin:5px 10px 5px 0;
+    min-width:180px;
+}
+
+input,select{
+    padding:8px;
+    margin:5px;
+    background:#1a2540;
+    color:white;
+    border:1px solid #334155;
+    border-radius:5px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    background:#22c55e;
+    border:none;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+button:hover{
+    background:#16a34a;
+}
+
+#result{
+    background:#0a0f1f;
+    padding:20px;
+    margin-top:15px;
+    border-radius:10px;
+    border:2px solid #22c55e;
+}
+
+.urgency-red{color:#ef4444;font-size:24px;font-weight:bold;}
+.urgency-orange{color:#f97316;font-size:20px;font-weight:bold;}
+.urgency-green{color:#22c55e;font-size:20px;}
+
+.findings{
+    background:#1a2540;
+    padding:10px;
+    margin:10px 0;
+    border-radius:5px;
+}
+
+.findings li{margin:5px 0;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;}
+
+.rhythm-box{
+    background:#1a2540;
+    padding:15px;
+    margin:10px 0;
+    border-radius:5px;
+    border-left:4px solid #22c55e;
+}
+
+.diagnosis{font-size:18px;font-weight:bold;color:#22c55e;margin:10px 0;}
+.diagnosis-abnormal{color:#f97316;}
+.diagnostic-urgent{color:#ef4444;}
+
+.radio-group{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+    margin:10px 0;
+}
+
+.radio-group label{
+    min-width:auto;
+    cursor:pointer;
+    background:#1a2540;
+    padding:10px 15px;
+    border-radius:5px;
+    border:1px solid #334155;
+}
+
+.radio-group input[type="radio"]{
+    margin-right:8px;
+}
+
+.info-text{
+    font-size:12px;
+    color:#94a3b8;
+    margin-top:5px;
+    font-style:italic;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🫀 INTERPRÉTATION ECG</h1>
+
+<!-- ================= TECH CHECK ================= -->
+<div class="section">
+
+<h3>🧪 Vérification technique</h3>
+
+<label>Vitesse papier :</label>
+<select id="speed" onchange="checkTech()">
+<option value="25" selected>25 mm/s</option>
+<option value="50">50 mm/s</option>
+</select>
+
+<label>Calibration :</label>
+<select id="calib" onchange="checkTech()">
+<option value="10" selected>10 mm/mV</option>
+<option value="5">5 mm/mV</option>
+</select>
+
+<label>QRS en aVR :</label>
+<select id="avr" onchange="checkTech()">
+<option value="negatif" selected>Négatif</option>
+<option value="positif">Positif (anormal)</option>
+</select>
+
+<div id="tech_warning" style="display:none; margin-top:10px; padding:10px; background:#f97316; color:white; border-radius:5px; font-weight:bold;">
+⚠️ Anomalie technique detectee !
+<div id="tech_warning_text"></div>
+</div>
+
+</div>
+
+<!-- ================= FC ================= -->
+<div class="section">
+<h3>❤️ Fréquence cardiaque</h3>
+
+<div class="grid">
+<div>
+<label>Type de mesure :</label>
+<select id="rr_type" onchange="toggleRRinput()">
+<option value="big">Grands carrés</option>
+<option value="small">Petits carrés</option>
+<option value="manual">Saisie directe</option>
+</select>
+</div>
+</div>
+
+<div class="grid">
+<div>
+<label id="rr_label">Nombre de RR (grands carrés) :</label>
+<input id="rr_count" placeholder="ex: 4" oninput="calcFC()" style="width:80px">
+</div>
+
+<div>
+<label>FC calculée (bpm) :</label>
+<input id="fc_calc" placeholder="ex: 75" oninput="updateFCtype()" style="width:80px;background:#22c55e;color:white;font-weight:bold;">
+</div>
+</div>
+
+<div>
+<label>FC estimée :</label>
+<select id="fc">
+<option value="low">&lt; 30 bpm (Bradycardie)</option>
+<option value="normal" selected>30-100 bpm (Normal)</option>
+<option value="high">&gt; 100 bpm (Tachycardie)</option>
+</select>
+</div>
+</div>
+
+</div>
+
+<script>
+function toggleRRinput(){
+    var type = document.getElementById("rr_type").value;
+    var label = document.getElementById("rr_label");
+    var countInput = document.getElementById("rr_count");
+    var fcInput = document.getElementById("fc_calc");
+
+    if(type == "big"){
+        label.innerHTML = "Nombre de RR (grands carrés) :";
+        countInput.style.display = "inline-block";
+    }
+    else if(type == "small"){
+        label.innerHTML = "Nombre de RR (petits carrés) :";
+        countInput.style.display = "inline-block";
+    }
+    else{
+        label.innerHTML = "";
+        countInput.value = "";
+        countInput.style.display = "none";
+    }
+    calcFC();
+}
+
+function updateFCtype(){
+    var type = document.getElementById("rr_type");
+    if(type.value == "manual"){
+        var fc = document.getElementById("fc_calc").value;
+        if(fc !== ""){
+            var fcSelect = document.getElementById("fc");
+            if(parseInt(fc) < 30){
+                fcSelect.value = "low";
+            }
+            else if(parseInt(fc) > 100){
+                fcSelect.value = "high";
+            }
+            else{
+                fcSelect.value = "normal";
+            }
+        }
+    }
+}
+
+function calcFC(){
+    var type = document.getElementById("rr_type").value;
+    var count = parseFloat(document.getElementById("rr_count").value);
+    var countInput = document.getElementById("rr_count");
+    var fcInput = document.getElementById("fc_calc");
+
+    // Cas saisie manuelle
+    if(type == "manual"){
+        return;
+    }
+
+    if(isNaN(count) || count <= 0){
+        fcInput.value = "";
+        return;
+    }
+
+    var fc;
+    if(type == "big"){
+        fc = 300 / count;
+    }
+    else if(type == "small"){
+        fc = 1500 / count;
+    }
+
+    fcInput.value = Math.round(fc);
+
+    // Auto-update FC select
+    var fcSelect = document.getElementById("fc");
+    if(fc < 30){
+        fcSelect.value = "low";
+    }
+    else if(fc > 100){
+        fcSelect.value = "high";
+    }
+    else{
+        fcSelect.value = "normal";
+    }
+}
+
+function calcQTc(){
+    var qt = parseFloat(document.getElementById("qt").value);
+    var rrCount = parseFloat(document.getElementById("rr_count").value);
+    var rrType = document.getElementById("rr_type").value;
+    var qtcInput = document.getElementById("qtc_calc");
+    var qtcSelect = document.getElementById("qtc");
+    var sex = document.getElementById("sex").value;
+
+    if(isNaN(qt) || qt <= 0 || isNaN(rrCount) || rrCount <= 0){
+        if(qtcInput) qtcInput.value = "";
+        return;
+    }
+
+    var rrSeconds;
+    if(rrType == "big"){
+        rrSeconds = rrCount * 0.2;
+    }
+    else if(rrType == "small"){
+        rrSeconds = rrCount * 0.04;
+    }
+    else{
+        var fcManual = parseFloat(document.getElementById("fc_calc").value);
+        if(isNaN(fcManual) || fcManual <= 0){
+            if(qtcInput) qtcInput.value = "";
+            return;
+        }
+        rrSeconds = 60 / fcManual;
+    }
+
+    var qtc = qt / Math.sqrt(rrSeconds);
+    if(qtcInput) qtcInput.value = Math.round(qtc);
+
+    if(qtcSelect){
+        if(sex == "male"){
+            qtcSelect.value = (qtc > 450) ? "prolonged" : "normal";
+        }
+        else{
+            qtcSelect.value = (qtc > 460) ? "prolonged" : "normal";
+        }
+    }
+}
+</script>
+
+<!-- ================= RHYTHM ANALYSIS ================= -->
+<div class="section">
+
+<h3>🫀 Analyse du rythme</h3>
+
+<div class="grid">
+<div>
+<label>Type activité atriale :</label>
+<select id="atrial" onchange="checkOrigin()">
+<option value="sinus">Onde P présente</option>
+<option value="flutter">Flutter (dent de scie)</option>
+<option value="fa">Fibrillation auriculaire</option>
+<option value="none">Onde P absente</option>
+</select>
+</div>
+
+<div>
+<label>Durée QRS :</label>
+<select id="qrs_width" onchange="checkOrigin()">
+<option value="narrow">&lt; 120 ms (QRS fin)</option>
+<option value="intermediate">120-140 ms</option>
+<option value="wide">&gt; 140 ms (QRS large)</option>
+</select>
+</div>
+</div>
+
+<div class="grid">
+<div>
+<label>Morphologie QRS :</label>
+<select id="qrs_morpho" onchange="checkOrigin()">
+<option value="normal">Normal</option>
+<option value="prematuro">QRS prématuré (ES)</option>
+<option value="const">QRS amplitude et largeur constant</option>
+<option value="var_const">QRS amplitude variable et largeur constant</option>
+<option value="variable">QRS amplitude et largeur variable</option>
+</select>
+</div>
+
+<div>
+<label>Origine :</label>
+<select id="origin" onchange="checkOrigin()">
+<option value="sinus">Sinusal</option>
+<option value="jonction" selected>Jonctionnel</option>
+<option value="vent">Ventriculaire</option>
+</select>
+</div>
+
+</div>
+
+<p class="info-text" id="origin_hint" style="color:#22c55e;">Si onde P absente + QRS fin → Origine auto: jonctionnel</p>
+<p class="info-text" id="rhythm_hint" style="display:none; font-weight:bold;"></p>
+
+<script>
+function checkOrigin(){
+    var atrial=document.getElementById("atrial").value;
+    var qrsWidth=document.getElementById("qrs_width").value;
+    var qrsMorpho=document.getElementById("qrs_morpho").value;
+    var origin=document.getElementById("origin");
+    var hint=document.getElementById("origin_hint");
+    var rhythmHint=document.getElementById("rhythm_hint");
+
+    var diagnostic = "";
+    var hintColor = "#22c55e";
+
+    // Onde P absente + QRS large (>140ms)
+    if(atrial==="none" && qrsWidth==="wide"){
+        if(qrsMorpho==="prematuro"){
+            diagnostic = "Extrasystole ventriculaire (ES)";
+            hintColor = "#f97316";
+            origin.value="vent";
+        }
+        else if(qrsMorpho==="variable"){
+            diagnostic = "Fibrillation ventriculaire (FV)";
+            hintColor = "#ef4444";
+            origin.value="vent";
+        }
+        else if(qrsMorpho==="const" || qrsMorpho==="var_const"){
+            diagnostic = "Tachycardie ventriculaire (TV)";
+            hintColor = "#ef4444";
+            origin.value="vent";
+        }
+    }
+    // Onde P absente + QRS intermediaire (120-140ms) avec amplitude variable et largeur constant
+    else if(atrial==="none" && qrsWidth==="intermediate" && qrsMorpho==="var_const"){
+        diagnostic = "Torsades de pointes (TP)";
+        hintColor = "#ef4444";
+        origin.value="vent";
+    }
+    // QRS premature (ES)
+    else if(qrsMorpho==="prematuro"){
+        diagnostic = "Extrasystole ventriculaire (ES)";
+        hintColor = "#f97316";
+        origin.value="vent";
+    }
+    // QRS amplitude constante avec largeur constante = TV
+    else if(qrsMorpho==="const"){
+        diagnostic = "Tachycardie ventriculaire (TV)";
+        hintColor = "#ef4444";
+        origin.value="vent";
+    }
+    // QRS amplitude et largeur variable = FV
+    else if(qrsMorpho==="variable"){
+        diagnostic = "Fibrillation ventriculaire (FV)";
+        hintColor = "#ef4444";
+        origin.value="vent";
+    }
+    // Auto-origin si onde P absente sans morphologie specifique
+    else if(atrial==="none"){
+        if(qrsWidth==="narrow"){
+            diagnostic = "";
+            origin.value="jonction";
+            hint.innerHTML="Onde P absente + QRS fin → Origine auto: jonctionnel";
+            hint.style.color="#22c55e";
+        }
+        else{
+            origin.value="vent";
+            hint.innerHTML="Onde P absente + QRS large → Origine auto: ventriculaire";
+            hint.style.color="#f97316";
+        }
+    }
+    else{
+        hint.innerHTML="";
+    }
+
+    // Afficher le diagnostic
+    if(diagnostic !== ""){
+        rhythmHint.style.display = "block";
+        rhythmHint.innerHTML = diagnostic;
+        rhythmHint.style.color = hintColor;
+        hint.innerHTML = "";
+    }
+    else{
+        rhythmHint.style.display = "none";
+    }
+}
+</script>
+
+<!-- ================= AXE ================= -->
+<div class="section">
+
+<h3>Axe électrique du cœur (calcul automatique)</h3>
+
+<div class="grid">
+<div>
+<label>Amplitude R en D1 (mm) :</label>
+<input type="number" id="r_d1" placeholder="Ex: 5" style="width:80px" oninput="updateAxis()">
+</div>
+
+<div>
+<label>Amplitude R en aVF (mm) :</label>
+<input type="number" id="r_avf" placeholder="Ex: 3" style="width:80px" oninput="updateAxis()">
+</div>
+</div>
+
+<p class="info-text"><b>Optionnel (amélioration précision)</b></p>
+
+<div class="grid">
+<div>
+<label>R en D2 (mm) :</label>
+<input type="number" id="r_d2" placeholder="Ex: 4" style="width:80px" oninput="updateAxis()">
+</div>
+
+<div>
+<label>R en D3 (mm) :</label>
+<input type="number" id="r_d3" placeholder="Ex: 2" style="width:80px" oninput="updateAxis()">
+</div>
+</div>
+
+
+
+<h4>Cercle hexaxial (QRS Axis)</h4>
+<canvas id="hexCanvas" width="300" height="300" style="background:#1a2540;border-radius:10px;"></canvas>
+<div id="axisText" style="margin-top:10px;padding:10px;background:#121a33;border-radius:5px;">
+<b>Axe :</b> --°<br>
+<b>Interpretation :</b> En attente...
+</div>
+
+<select id="axis" style="display:none;">
+<option value="normal">Normal</option>
+<option value="gauche">Gauche</option>
+<option value="droit">Droit</option>
+<option value="hypergauche">Hypergauche</option>
+</select>
+
+</div>
+
+<!-- ================= INDICES HVG ================= -->
+<div class="section">
+
+<h3>Indices d'hypertrophie ventriculaire gauche (HVG)</h3>
+
+<p class="info-text">Utilisez les memes valeurs que la partie Axe</p>
+
+<div class="grid">
+<div>
+<label>R V5 (mm) - precordiale :</label>
+<input type="number" id="rv5" placeholder="Ex: 12" style="width:80px">
+</div>
+
+<div>
+<label>S V1 (mm) - precordiale :</label>
+<input type="number" id="sv1" placeholder="Ex: 8" style="width:80px">
+</div>
+</div>
+
+<hr style="border-color:#334155;margin:10px 0;">
+
+<div class="grid">
+<div>
+<label>R aVL (mm) :</label>
+<input type="number" id="ravl" placeholder="Ex: 8" style="width:80px">
+</div>
+
+<div>
+<label>S V3 (mm) :</label>
+<input type="number" id="sv3" placeholder="Ex: 10" style="width:80px">
+</div>
+</div>
+
+<hr style="border-color:#334155;margin:10px 0;">
+
+<div class="grid">
+<div>
+<label>R DI (mm) - membres :</label>
+<input type="number" id="rdi_hvg" placeholder="Ex: 10" style="width:80px" readonly>
+</div>
+
+<div>
+<label>S DIII (mm) :</label>
+<input type="number" id="sdiii" placeholder="Ex: 6" style="width:80px">
+</div>
+</div>
+
+<div class="grid">
+<div>
+<label>R DIII (mm) :</label>
+<input type="number" id="rdiii" placeholder="Ex: 2" style="width:80px">
+</div>
+
+<div>
+<label>S DI (mm) :</label>
+<input type="number" id="sdi" placeholder="Ex: 0" style="width:80px">
+</div>
+</div>
+
+<p class="info-text">
+<b>R DI</b> est automatiquement reporté de la partie Axe (D1)<br>
+<b>Sokolow-Lyon:</b> SV1 + RV5 > 35mm | <b>Cornell:</b> RaVL + SV3 > 28mm (H) / 20mm (F) | 
+<b>Lewis:</b> (RDI+SDIII)-(RDIII+SDI) > +17mm | <b>Gubner:</b> RDI + SDIII > 25mm
+</p>
+
+</div>
+
+
+
+<!-- ================= SIGNES EMBOLIE PULMONAIRE ================= -->
+<div class="section">
+
+<h3>Recherche embolie pulmonaire (EP)</h3>
+
+<div class="grid">
+<div>
+<label>
+<input type="checkbox" id="ep_tachy">
+ Tachycardie sinusale
+</label>
+</div>
+
+<div>
+<label>
+<input type="checkbox" id="ep_s1q3t3">
+ S1Q3T3
+</label>
+</div>
+
+<div>
+<label>
+<input type="checkbox" id="ep_bbd">
+ Bloc de branche droit
+</label>
+</div>
+
+<div>
+<label>
+<input type="checkbox" id="ep_tneg">
+ T negative V1-V4
+</label>
+</div>
+
+<div>
+<label>
+<input type="checkbox" id="ep_pulmonaire">
+ Onde P pulmonaire
+</label>
+</div>
+
+<div>
+<label>
+<input type="checkbox" id="ep_axe_droit">
+ Deviation axiale droite
+</label>
+</div>
+
+<div>
+<label>
+<input type="checkbox" id="ep_syncope">
+ Syncope
+</label>
+</div>
+
+<div>
+<label>
+<input type="checkbox" id="ep_dyspnee">
+ Dyspnee brutale
+</label>
+</div>
+</div>
+
+<p class="info-text"><b>S1Q3T3:</b> S en DI + Q en DIII + T negative DIII | <b>Tachycardie:</b> signe le plus frequent | <b>BBD:</b> signe de surcharge VD</p>
+
+</div>
+
+<!-- ================= ONDE P ================= -->
+<div class="section">
+
+<h3>📊 Onde P</h3>
+
+<div class="grid">
+<div>
+<label>Durée onde P :</label>
+<select id="p_duration">
+<option value="normal">&lt; 120 ms (Normal)</option>
+<option value="prolonged">&gt; 120 ms (Allongée)</option>
+</select>
+</div>
+
+<div>
+<label>Amplitude onde P (DII-DIII) :</label>
+<select id="p_amplitude">
+<option value="normal">&lt; 2.5 mm (Normal)</option>
+<option value="tall">&gt; 2.5 mm (Haute)</option>
+</select>
+</div>
+</div>
+
+</div>
+
+<!-- ================= BAV ================= -->
+<div class="section">
+
+<h3>📏 Intervalle PQ / BAV</h3>
+
+<div class="radio-group">
+<label>
+<input type="radio" name="bav" value="aucun" checked>
+ Pas de BAV
+</label>
+
+<label>
+<input type="radio" name="bav" value="bav1">
+ BAV 1er degré (PQ &gt; 200 ms constant)
+</label>
+
+<label>
+<input type="radio" name="bav" value="mobitz1">
+ BAV 2e Mobitz I (Wenckebach)
+</label>
+
+<label>
+<input type="radio" name="bav" value="mobitz2">
+ BAV 2e Mobitz II
+</label>
+
+<label>
+<input type="radio" name="bav" value="bav3">
+ BAV 3e degré (complet)
+</label>
+</div>
+
+<p class="info-text"><b>BAV 1 :</b> PR long constant | <b>Mobitz I :</b> PR progressif puis bloqué | <b>Mobitz II :</b> PR fixe + QRS bloqué | <b>BAV 3 :</b> dissociation AV</p>
+
+</div>
+
+<!-- ================= ONDE Q ================= -->
+<div class="section">
+
+<h3>📐 Onde Q</h3>
+
+<select id="q_wave">
+<option value="absent">Absente</option>
+<option value="present">Présente</option>
+</select>
+
+</div>
+
+<script>
+function checkTech(){
+    var speed = document.getElementById("speed").value;
+    var calib = document.getElementById("calib").value;
+    var avr = document.getElementById("avr").value;
+
+    var warnings = [];
+    var errorMsg = "";
+
+    if(speed != "25"){
+        warnings.push("Vitesse papier non standard (" + speed + " mm/s) - verifier le parametrage");
+    }
+
+    if(calib != "10"){
+        warnings.push("Calibration non standard (" + calib + " mm/mV) - verifier le parametrage");
+    }
+
+    if(avr == "positif"){
+        errorMsg = "⚠️ QRS POSITIF en aVR - ERREUR placement electrodes !";
+    }
+
+    var warningBox = document.getElementById("tech_warning");
+    var warningText = document.getElementById("tech_warning_text");
+
+    // Alerte rouge pour aVR
+    if(errorMsg != ""){
+        warningBox.style.display = "block";
+        warningBox.style.background = "#ef4444";
+        warningBox.style.color = "white";
+        warningText.innerHTML = errorMsg;
+    }
+    // Alerte orange pour les autres
+    else if(warnings.length > 0){
+        warningBox.style.display = "block";
+        warningBox.style.background = "#f97316";
+        warningBox.style.color = "white";
+        warningText.innerHTML = "⚠️ Anomalie technique detectee !<br>" + warnings.join("<br>");
+    }
+    else{
+        warningBox.style.display = "none";
+    }
+}
+</script>
+
+<!-- ================= MORPHOLOGIE QRS ================= -->
+<div class="section">
+
+<h3>Morphologie du QRS</h3>
+
+<div class="radio-group">
+<label>
+<input type="radio" name="qrs_morpho" value="normal" checked>
+ QRS normal
+</label>
+
+<label>
+<input type="radio" name="qrs_morpho" value="M_droite">
+ Aspect en M (V1-V2)
+</label>
+
+<label>
+<input type="radio" name="qrs_morpho" value="W_gauche">
+ Aspect en W (V5-V6)
+</label>
+</div>
+
+<p class="info-text"><b>M à droite (V1-V2) :</b> Bloc de branche droit | <b>W à gauche (V5-V6) :</b> Bloc de branche gauche</p>
+
+</div>
+
+<!-- ================= HEMIBLOCS ================= -->
+<div class="section">
+
+<h3>Hémiblocs fasciculaires</h3>
+
+<div class="radio-group">
+<label>
+<input type="radio" name="hemibloc" value="aucun" checked>
+ Aucun
+</label>
+
+<label>
+<input type="radio" name="hemibloc" value="hbag">
+ Hémibloc antérieur gauche (HBAG)
+</label>
+
+<label>
+<input type="radio" name="hemibloc" value="hbpg">
+ Hémibloc postérieur gauche (HBPG)
+</label>
+</div>
+
+<p class="info-text"><b>HBAG :</b> Axe gauche, qR en DI-aVL, rS en DII-DIII-aVF | <b>HBPG :</b> Axe droit, rS en DI, qR en DIII-aVF</p>
+
+</div>
+
+<!-- ================= QRS ================= -->
+
+<!-- ================= ONDE EPSILON ================= -->
+
+
+<!-- ================= QT ================= -->
+<div class="section">
+
+<h3>⏱ QT / QTc</h3>
+
+<div class="grid">
+<div class="grid">
+<div>
+<label>Sexe :</label>
+<select id="sex">
+<option value="male">Homme</option>
+<option value="female">Femme</option>
+</select>
+</div>
+
+<div>
+<label>QT mesuré (ms) :</label>
+<input id="qt" placeholder="ex: 400" oninput="calcQTc()" style="width:80px">
+</div>
+
+<div>
+<label>QTc calculé (ms) :</label>
+<input id="qtc_calc" readonly style="width:80px;background:#22c55e;color:white;font-weight:bold;">
+</div>
+
+<div>
+<label>QTc estimé :</label>
+<select id="qtc">
+<option value="normal">Normal</option>
+<option value="prolonged">QTc long</option>
+</select>
+</div>
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+<!-- ================= ST ================= -->
+<div class="section">
+
+<h3>📈 Segment ST</h3>
+
+<div class="grid">
+<div>
+<label>Aspect du ST :</label>
+<select id="st">
+<option value="iso">Iso-électrique</option>
+<option value="sous-diffus">Sous-décalage diffus (sous-endocardique)</option>
+<option value="sous-local">Sous-décalage localisé</option>
+<option value="sus-convex">Sus-décalage convexe (dôme) - STEMI</option>
+<option value="sus-concave">Sus-décalage concave (cradle) - Péricardite</option>
+<option value="sus-local">Sus-décalage localisé</option>
+</select>
+</div>
+</div>
+
+<p class="info-text"><b>Sous-décalage :</b> ischémie sous-endocardique, HVG, Digitalis<br>
+<b>Sus-décalage convexe :</b> STEMI / IDM aigu<br>
+<b>Sus-décalage concave :</b> péricardite aiguë</p>
+
+</div>
+
+<!-- ================= TERRITOIRES ISCHEMIE ================= -->
+<div class="section">
+
+<h3>Territoires irrigation / ischémie</h3>
+
+<div class="grid">
+<div>
+<label>
+<input type="checkbox" id="isch_lat_haut">
+ DI / aVL (Latérale haute)
+</label>
+</div>
+
+<div>
+<label>
+<input type="checkbox" id="isch_lat_bas">
+ V5 / V6 (Latérale basse)
+</label>
+</div>
+
+<div>
+<label>
+<input type="checkbox" id="isch_inf">
+ DII / DIII / aVF (Inférieure)
+</label>
+</div>
+
+<div>
+<label>
+<input type="checkbox" id="isch_ant">
+ V1 / V2 / V3 / V4 (Antérieure)
+</label>
+</div>
+
+<div>
+<label>
+<input type="checkbox" id="isch_post">
+ Postérieure (miroir V1-V3)
+</label>
+</div>
+</div>
+
+<p class="info-text"><b>Latérale haute:</b> DI + aVL (Cx) | <b>Latérale basse:</b> V5-V6 (Cx) | <b>Inférieure:</b> DII-DIII-aVF (RCA) | <b>Antérieure:</b> V1-V4 (IVA) | <b>Postérieure:</b> miroir V1-V3</p>
+
+</div>
+
+<!-- ================= ONDE T ================= -->
+<div class="section">
+
+<h3>📉 Onde T</h3>
+
+<div class="grid">
+<div>
+<label>Morphologie onde T :</label>
+<select id="t_wave">
+<option value="normale">Normale</option>
+<option value="aplatie">Aplatie</option>
+<option value="ample">Ample / pointue</option>
+<option value="negative">Négative</option>
+</select>
+</div>
+</div>
+
+<p class="info-text"><b>Onde T normale :</b> amplitude entre 1/8 et &lt; 2/3 de l'onde R<br>
+<b>Membres :</b> &lt; 5 mm | <b>Précordiales :</b> &lt; 10 mm</p>
+
+</div>
+
+<button onclick="analyze()">🧠 Analyser ECG</button>
+
+<div id="result"></div>
+
+<script>
+
+// ================= CERCLE HEXAXIAL =================
+
+var hexCanvas = document.getElementById("hexCanvas");
+var hexCtx = hexCanvas.getContext("2d");
+
+function drawHexCircle(){
+
+    hexCtx.clearRect(0,0,300,300);
+
+    var centerX = 150;
+    var centerY = 150;
+    var radius = 120;
+
+    // Cercle exterieur
+    hexCtx.beginPath();
+    hexCtx.arc(centerX, centerY, radius, 0, 2*Math.PI);
+    hexCtx.strokeStyle = "#334155";
+    hexCtx.lineWidth = 2;
+    hexCtx.stroke();
+
+    // Axe D1 (0 degre - horizontal droite)
+    drawAxisLine(centerX, centerY, centerX + radius, centerY, "D1");
+    hexCtx.fillStyle = "#22c55e";
+    hexCtx.fillText("D1", centerX + radius + 10, centerY + 5);
+
+    // Axe aVF (90 degre - vertical bas, +90°)
+    drawAxisLine(centerX, centerY, centerX, centerY + radius, "aVF");
+    hexCtx.fillStyle = "#22c55e";
+    hexCtx.fillText("aVF", centerX + 5, centerY + radius + 15);
+
+    // Axe D3 (120 degre)
+    var d3x = centerX + radius * Math.cos(Math.PI*2/3);
+    var d3y = centerY + radius * Math.sin(Math.PI*2/3);
+    drawAxisLine(centerX, centerY, d3x, d3y, "D3");
+    hexCtx.fillText("D3", d3x + 5, d3y);
+
+    // Axe D2 (60 degre)
+    var d2x = centerX + radius * Math.cos(Math.PI/3);
+    var d2y = centerY + radius * Math.sin(Math.PI/3);
+    drawAxisLine(centerX, centerY, d2x, d2y, "D2");
+    hexCtx.fillText("D2", d2x + 5, d2y);
+
+    // Labels angles
+    hexCtx.fillStyle = "#64748b";
+    hexCtx.font = "10px Arial";
+    hexCtx.fillText("0", centerX + radius + 25, centerY);
+    hexCtx.fillText("+90", centerX + 5, centerY + radius + 15);
+    hexCtx.fillText("-90", centerX + 5, centerY - radius - 10);
+    hexCtx.fillText("±180", centerX - radius - 30, centerY);
+}
+
+function drawAxisLine(x, y, x2, y2, label){
+
+    hexCtx.beginPath();
+    hexCtx.moveTo(x, y);
+    hexCtx.lineTo(x2, y2);
+    hexCtx.strokeStyle = "#475569";
+    hexCtx.lineWidth = 1;
+    hexCtx.stroke();
+}
+
+function updateAxis(){
+    var r_d1Input = document.getElementById("r_d1");
+    var r_avfInput = document.getElementById("r_avf");
+    var r_d2Input = document.getElementById("r_d2");
+    var r_d3Input = document.getElementById("r_d3");
+    
+    if(!r_d1Input || !r_avfInput) return;
+    
+    var r_d1 = parseFloat(r_d1Input.value) || 0;
+    var r_avf = parseFloat(r_avfInput.value) || 0;
+    var r_d2 = r_d2Input ? (parseFloat(r_d2Input.value) || 0) : 0;
+    var r_d3 = r_d3Input ? (parseFloat(r_d3Input.value) || 0) : 0;
+    
+    var canvas = document.getElementById("hexCanvas");
+    var ctx = canvas.getContext("2d");
+    var w = canvas.width;
+    var h = canvas.height;
+    var cx = w/2;
+    var cy = h/2;
+    var r = 120;
+    
+    ctx.clearRect(0,0,w,h);
+    
+    // Draw hex circle
+    ctx.strokeStyle = "#334155";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.stroke();
+    
+    // Draw axes labels
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "12px Arial";
+    ctx.textAlign = "center";
+    
+    var labels = [
+        {text: "0° (D1)", x: cx+r+10, y: cy},
+        {text: "+30°", x: cx+r*0.866+10, y: cy+r*0.5},
+        {text: "+60°", x: cx+r*0.5, y: cy+r*0.866+5},
+        {text: "+90°", x: cx, y: cy+r+10},
+        {text: "+120°", x: cx-r*0.5, y: cy+r*0.866+5},
+        {text: "+150°", x: cx-r*0.866+10, y: cy+r*0.5},
+        {text: "±180°", x: cx-r-10, y: cy},
+        {text: "-150°", x: cx-r*0.866+10, y: cy-r*0.5},
+        {text: "-120°", x: cx-r*0.5, y: cy-r*0.866},
+        {text: "-90°", x: cx, y: cy-r-10},
+        {text: "-60°", x: cx+r*0.5, y: cy-r*0.866},
+        {text: "-30°", x: cx+r*0.866+10, y: cy-r*0.5}
+    ];
+    labels.forEach(function(lb){
+        ctx.fillText(lb.text, lb.x, lb.y);
+    });
+    
+    // Calculate axis angle using correct formula
+    // Axe = arctan(RaVF / R_D1) with quadrant check
+    var angleDeg = 0;
+    var interpretation = "En attente...";
+    
+    // Calculate axis angle using all available derivations (weighted average)
+    var totalR = Math.abs(r_d1) + Math.abs(r_avf) + Math.abs(r_d2) + Math.abs(r_d3);
+    
+    if(totalR > 0){
+        // Weighted average angle calculation
+        var sumX = 0, sumY = 0;
+        
+        if(r_d1 !== 0){
+            sumX += r_d1;
+            sumY += 0;
+        }
+        if(r_avf !== 0){
+            sumX += 0;
+            sumY += r_avf;
+        }
+        if(r_d2 !== 0){
+            sumX += r_d2 * 0.5;
+            sumY += r_d2 * 0.866;
+        }
+        if(r_d3 !== 0){
+            sumX += r_d3 * (-0.5);
+            sumY += r_d3 * 0.866;
+        }
+        
+        angleDeg = Math.atan2(sumY, sumX) * 180 / Math.PI;
+        
+        // Normal range: -30° to +90°
+        if(angleDeg >= -30 && angleDeg <= 90){
+            interpretation = "Normal";
+        }
+        else if(angleDeg < -30){
+            interpretation = "Axe gauche (deviation gauche)";
+        }
+        else if(angleDeg > 90){
+            interpretation = "Axe droit (deviation droite)";
+        }
+    }
+    else{
+        interpretation = "En attente...";
+    }
+    
+    // Draw the axis vector (use weighted average)
+    var vectorX = r_d1;
+    var vectorY = r_avf;
+    
+    if(r_d2 !== 0 || r_d3 !== 0){
+        // Recalculate for drawing
+        var sumX = 0, sumY = 0, totalW = 0;
+        if(r_d1 !== 0){ sumX += r_d1; totalW += Math.abs(r_d1); }
+        if(r_avf !== 0){ sumY += r_avf; totalW += Math.abs(r_avf); }
+        if(r_d2 !== 0){ sumX += r_d2 * 0.5; sumY += r_d2 * 0.866; totalW += Math.abs(r_d2); }
+        if(r_d3 !== 0){ sumX += r_d3 * (-0.5); sumY += r_d3 * 0.866; totalW += Math.abs(r_d3); }
+        if(totalW > 0){
+            vectorX = sumX / (totalW / (Math.abs(r_d1||0) + Math.abs(r_avf||0) + Math.abs(r_d2||0) + Math.abs(r_d3||0)));
+            vectorY = sumY / (totalW / (Math.abs(r_d1||0) + Math.abs(r_avf||0) + Math.abs(r_d2||0) + Math.abs(r_d3||0)));
+        }
+    }
+    
+    if(vectorX !== 0 || vectorY !== 0){
+        var drawAngle = Math.atan2(vectorY, vectorX);
+        var arrowX = cx + r * Math.cos(drawAngle);
+        var arrowY = cy + r * Math.sin(drawAngle);
+        
+        ctx.strokeStyle = "#22c55e";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(cx,cy);
+        ctx.lineTo(arrowX,arrowY);
+        ctx.stroke();
+        
+        // Arrowhead
+        var headLen = 10;
+        ctx.beginPath();
+        ctx.moveTo(arrowX,arrowY);
+        ctx.lineTo(arrowX - headLen*Math.cos(drawAngle - Math.PI/6), arrowY - headLen*Math.sin(drawAngle - Math.PI/6));
+        ctx.moveTo(arrowX,arrowY);
+        ctx.lineTo(arrowX - headLen*Math.cos(drawAngle + Math.PI/6), arrowY - headLen*Math.sin(drawAngle + Math.PI/6));
+        ctx.stroke();
+    }
+    
+    // Draw quadrants (upper = negative, lower = positive)
+    ctx.strokeStyle = "#ef4444";
+    ctx.setLineDash([5,5]);
+    ctx.beginPath();
+    ctx.moveTo(cx,0); ctx.lineTo(cx,h);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Update text
+    var axisText = document.getElementById("axisText");
+    var totalR = Math.abs(r_d1) + Math.abs(r_avf) + Math.abs(r_d2) + Math.abs(r_d3);
+    var angleDisplay = (totalR > 0) ? Math.round(angleDeg) + "°" : "--°";
+    axisText.innerHTML = "<b>Axe :</b> " + angleDisplay + "<br><b>Interpretation :</b> " + interpretation;
+    
+    // Update axis select
+    var axisSel = document.getElementById("axis");
+    if(axisSel){
+        if(interpretation === "Normal"){
+            axisSel.value = "normal";
+        }
+        else if(interpretation.includes("gauche")){
+            axisSel.value = "gauche";
+        }
+        else if(interpretation.includes("droite")){
+            axisSel.value = "droit";
+        }
+    }
+    
+    // Sync R DI from Axe to HVG indices
+    var rdi_hvg = document.getElementById("rdi_hvg");
+    if(!isNaN(r_d1)){
+        rdi_hvg.value = r_d1;
+    }
+    else{
+        rdi_hvg.value = "";
+    }
+    
+    // Auto calc QTc
+    calcQTc();
+}
+
+// Initialiser le cercle au chargement
+drawHexCircle();
+
+function analyze(){
+
+var findings=[];
+var urgency=0;
+var rhythm="";
+
+// ================= TECH CHECK =================
+
+var avr=document.getElementById("avr").value;
+if(avr==="positif"){
+findings.push("aVR positif - anomalie");
+urgency+=1;
+}
+
+// ================= FC =================
+
+var fcCalc=document.getElementById("fc_calc").value;
+var fcValue=document.getElementById("fc").value;
+
+if(fcCalc !== ""){
+    findings.push("FC calculee: " + fcCalc + " bpm");
+}
+else if(fcValue==="low"){
+    findings.push("Bradycardie (< 30 bpm)");
+    urgency+=2;
+}
+else if(fcValue==="high"){
+    findings.push("Tachycardie (> 100 bpm)");
+    urgency+=1;
+}
+
+// ================= RHYTHM ALGORITHM =================
+
+var atrial=document.getElementById("atrial").value;
+var qrsWidth=document.getElementById("qrs_width").value;
+var qrsMorpho=document.getElementById("qrs_morpho").value;
+var origin=document.getElementById("origin").value;
+
+var rhythmDiagnosis="";
+var rhythmUrgency=0;
+
+if(atrial==="sinus"){
+    rhythmDiagnosis="RYTHME SINUSAL";
+    rhythm+=rhythmDiagnosis;
+    findings.push("Rythme sinusal - onde P presente");
+}
+else if(atrial==="fa"){
+    rhythmDiagnosis="FIBRILLATION AURICULAIRE";
+    rhythm+=rhythmDiagnosis;
+    rhythmUrgency=2;
+    findings.push("Fibrillation auriculaire - rythme irregulier");
+}
+else if(atrial==="flutter"){
+    rhythmDiagnosis="FLUTTER AURICULAIRE";
+    rhythm+=rhythmDiagnosis;
+    rhythmUrgency=3;
+    findings.push("Flutter auriculaire - dents de scie regulieres");
+}
+else if(atrial==="none"){
+    if(qrsWidth==="narrow"){
+        rhythmDiagnosis="TACHYCARDIE JONCTIONNELLE";
+        rhythm+=rhythmDiagnosis;
+        rhythmUrgency=2;
+        findings.push("Tachycardie jonctionnelle (QRS fin < 120 ms)");
+    }
+    else{
+        rhythmDiagnosis="RYTHME VENTRICULAIRE";
+        rhythm+=rhythmDiagnosis;
+        rhythmUrgency=3;
+        findings.push("Rythme ventriculaire a QRS large");
+    }
+}
+
+if(qrsWidth==="wide" && origin!=="vent"){
+rhythmDiagnosis="BLOC DE BRANCHE";
+rhythm+=rhythmDiagnosis;
+rhythmUrgency=2;
+findings.push("Bloc de branche (QRS > 140 ms)");
+}
+
+if(qrsMorpho==="prematuro"){
+rhythmDiagnosis="EXTRASYSTOLE";
+rhythm+=rhythmDiagnosis;
+rhythmUrgency=1;
+findings.push("Extrasystole ventriculaire (QRS premature)");
+}
+
+if(qrsMorpho==="variable"){
+if(qrsWidth==="wide"){
+rhythmDiagnosis="TORSADES DE POINTES";
+rhythm+=rhythmDiagnosis;
+rhythmUrgency=5;
+findings.push("TORSADES DE POINTES");
+findings.push("TV a amplitude variable sur QT long");
+}
+}
+
+urgency+=rhythmUrgency;
+
+// ================= AXE CARDIAQUE CALCUL =================
+
+var r_d1=parseFloat(document.getElementById("r_d1").value)||0;
+var r_avf=parseFloat(document.getElementById("r_avf").value)||0;
+var r_d2=parseFloat(document.getElementById("r_d2").value)||0;
+var r_d3=parseFloat(document.getElementById("r_d3").value)||0;
+
+var axeDegrees="";
+var axeDescription="";
+
+// Calcul automatique si D1 et aVF sont renseignes
+if(r_d1 !== 0 || r_avf !== 0){
+
+    if(r_d1 > 0 && r_avf > 0){
+        axeDescription="Axe normal (0 a +90 deg)";
+        axeDegrees="0-90";
+    }
+    else if(r_d1 > 0 && r_avf < 0){
+        axeDescription="Deviation axiale gauche";
+        axeDegrees="-90 a 0";
+    }
+    else if(r_d1 < 0 && r_avf > 0){
+        axeDescription="Deviation axiale droite";
+        axeDegrees="+90 a +180";
+    }
+    else if(r_d1 < 0 && r_avf < 0){
+        axeDescription="Axe extreme (nord-ouest)";
+        axeDegrees="-90 a -180";
+    }
+
+    if(axeDescription !== ""){
+        findings.push("Axe automatique: " + axeDescription);
+    }
+
+    // Detection hemiblocs avec D2 et D3
+    if(r_d2 !== 0 || r_d3 !== 0){
+        // HBAG: D2 negatif avec D1 positif -> axe gauche
+        if(r_d2 < 0 && r_d1 > 0){
+            findings.push("HBAG possible (hemibloc anterieur gauche)");
+            findings.push("-> D2 negatif, axe derive a gauche");
+            urgency+=1;
+        }
+        // HBPG: D3 positif avec D1 negatif -> axe droit
+        else if(r_d3 > 0 && r_d1 < 0){
+            findings.push("HBPG possible (hemibloc posterieur gauche)");
+            findings.push("-> D3 positif, axe derive a droite");
+            urgency+=1;
+        }
+        // Coherence
+        else if(r_d1 > 0 && r_avf > 0 && r_d2 > 0){
+            findings.push("Axe normal confirme par D2");
+        }
+    }
+}
+else{
+    // Modemanuel si pas de valeurs
+    var axis=document.getElementById("axis").value;
+    switch(axis){
+    case "normal":findings.push("Axe normal");break;
+    case "droit":findings.push("Deviation axe a droite");urgency+=1;break;
+    case "gauche":findings.push("Deviation axe a gauche - HVG");urgency+=1;break;
+    case "hypergauche":findings.push("Axe hypergauche - HVG severe");urgency+=2;break;
+    }
+}
+
+// ================= INDICES HVG =================
+
+var rv5=parseFloat(document.getElementById("rv5").value)||0;
+var sv1=parseFloat(document.getElementById("sv1").value)||0;
+var ravl=parseFloat(document.getElementById("ravl").value)||0;
+var sv3=parseFloat(document.getElementById("sv3").value)||0;
+var rdi_hvg=parseFloat(document.getElementById("rdi_hvg").value)||0;
+var sdiii=parseFloat(document.getElementById("sdiii").value)||0;
+var rdiii=parseFloat(document.getElementById("rdiii").value)||0;
+var sdi=parseFloat(document.getElementById("sdi").value)||0;
+
+// Sokolow-Lyon: SV1 + RV5
+if(rv5 > 0 || sv1 > 0){
+    var sokolow = sv1 + rv5;
+    findings.push("Indice Sokolow-Lyon: " + sokolow + " mm");
+    if(sokolow > 35){
+        findings.push("-> HVG probable (Sokolow > 35mm)");
+        urgency+=2;
+    }
+}
+
+// Cornell: Ravl + SV3
+if(ravl > 0 || sv3 > 0){
+    var cornell = ravl + sv3;
+    findings.push("Indice Cornell: " + cornell + " mm");
+    if(cornell > 28){
+        findings.push("-> HVG masculine (Cornell > 28mm)");
+        urgency+=2;
+    }
+    else if(cornell > 20){
+        findings.push("-> HVG feminine (Cornell > 20mm)");
+        urgency+=2;
+    }
+}
+
+// Lewis: (RDI + SDIII) - (RDIII + SDI)
+if(rdi_hvg > 0 || sdiii > 0 || rdiii > 0 || sdi > 0){
+    var lewis = (rdi_hvg + sdiii) - (rdiii + sdi);
+    findings.push("Indice Lewis: " + lewis + " mm");
+    if(lewis > 17){
+        findings.push("-> HVG probable (Lewis > +17mm)");
+        urgency+=2;
+    }
+}
+
+// Gubner: RDI + SDIII
+if(rdi_hvg > 0 || sdiii > 0){
+    var gubner = rdi_hvg + sdiii;
+    findings.push("Indice Gubner: " + gubner + " mm");
+    if(gubner > 25){
+        findings.push("-> HVG probable (Gubner > 25mm)");
+        urgency+=2;
+    }
+}
+
+// ================= TERRITOIRES ISCHEMIE =================
+
+var isch_lat_haut=document.getElementById("isch_lat_haut").checked;
+var isch_lat_bas=document.getElementById("isch_lat_bas").checked;
+var isch_inf=document.getElementById("isch_inf").checked;
+var isch_ant=document.getElementById("isch_ant").checked;
+var isch_post=document.getElementById("isch_post").checked;
+
+var territoires = [];
+
+// Latérale haute = DI + aVL -> Circonflexe
+if(isch_lat_haut){
+    territoires.push("Latérale haute (DI+aVL)");
+    findings.push("Atteinte territoire lateral haut - artere circonflexe");
+    urgency+=3;
+}
+
+// Latérale basse = V5-V6 -> Circonflexe distale
+if(isch_lat_bas){
+    territoires.push("Latérale basse (V5-V6)");
+    findings.push("Atteinte territoire lateral bas - Cx distale");
+    urgency+=3;
+}
+
+// Inférieure = DII+DIII+aVF -> Coronaire droite
+if(isch_inf){
+    territoires.push("Inférieure (DII-DIII-aVF)");
+    findings.push("Atteinte territoire inferieur - coronaire droite");
+    urgency+=4;
+}
+
+// Antérieure = V1-V4 -> IVA
+if(isch_ant){
+    territoires.push("Antérieure (V1-V4)");
+    findings.push("Atteinte territoire anterieur - IVA (interventriculaire anterieure)");
+    urgency+=5;
+}
+
+// Postérieure = miroir V1-V3 -> RCA ou Cx
+if(isch_post){
+    territoires.push("Postérieure (miroir V1-V3)");
+    findings.push("Atteinte posterieure - considers V7-V9");
+    findings.push("Signe du miroir: ST sous-decalage V1-V3");
+    urgency+=3;
+}
+
+// Diagnostic coronaire proposé
+if(territoires.length > 0){
+    findings.push("Territoires touches: " + territoires.join(" + "));
+
+    if(isch_inf && !isch_ant){
+        findings.push("-> Coronaire droite (RCA) probablement occluse");
+    }
+    if(isch_ant){
+        findings.push("-> IVA (interventriculaire anterieure) probablement occluse");
+    }
+    if(isch_lat_haut || isch_lat_bas){
+        findings.push("-> Artere circonflexe (Cx) probablement occluse");
+    }
+}
+
+// ================= EMBOLIE PULMONAIRE =================
+
+var ep_tachy=document.getElementById("ep_tachy").checked;
+var ep_s1q3t3=document.getElementById("ep_s1q3t3").checked;
+var ep_bbd=document.getElementById("ep_bbd").checked;
+var ep_tneg=document.getElementById("ep_tneg").checked;
+var ep_pulmonaire=document.getElementById("ep_pulmonaire").checked;
+var ep_axe_droit=document.getElementById("ep_axe_droit").checked;
+var ep_syncope=document.getElementById("ep_syncope").checked;
+var ep_dyspnee=document.getElementById("ep_dyspnee").checked;
+
+var scoreEP = 0;
+var epSigns = [];
+
+if(ep_tachy){scoreEP += 2; epSigns.push("Tachycardie sinusale");}
+if(ep_s1q3t3){scoreEP += 3; epSigns.push("S1Q3T3");}
+if(ep_bbd){scoreEP += 2; epSigns.push("BBD (surcharge VD)");}
+if(ep_tneg){scoreEP += 2; epSigns.push("T negative V1-V4");}
+if(ep_pulmonaire){scoreEP += 1; epSigns.push("Onde P pulmonaire");}
+if(ep_axe_droit){scoreEP += 2; epSigns.push("Deviation axe droite");}
+if(ep_syncope){scoreEP += 3; epSigns.push("Syncope");}
+if(ep_dyspnee){scoreEP += 2; epSigns.push("Dyspnee brutale");}
+
+if(scoreEP > 0){
+    findings.push("Signes EP: " + epSigns.join(", "));
+}
+
+if(scoreEP >= 6){
+    findings.push("-> FORTE PROBABILITE embolie pulmonaire");
+    findings.push("URGENCE - scanner pulmonaire immediate");
+    urgency+=5;
+}
+else if(scoreEP >= 3){
+    findings.push("-> Probabilite intermediate EP");
+    findings.push("Verifier D-dimeres et scanner si besoin");
+    urgency+=2;
+}
+else if(scoreEP > 0){
+    findings.push("-> Quelques signes compatibles EP");
+}
+
+// ================= P WAVE =================
+
+var pDurationEl = document.getElementById("p_duration");
+var pAmplitudeEl = document.getElementById("p_amplitude");
+var pDuration = pDurationEl ? pDurationEl.value : "normal";
+var pAmplitude = pAmplitudeEl ? pAmplitudeEl.value : "normal";
+
+if(pDuration==="prolonged"){
+findings.push("Onde P prolongee (> 120 ms)");
+findings.push("Hypertrophie auriculaire gauche");
+urgency+=1;
+}
+
+if(pAmplitude==="tall"){
+findings.push("Onde P haute (> 2.5 mm)");
+findings.push("Hypertrophie auriculaire droite");
+urgency+=1;
+}
+
+// ================= BAV =================
+
+var bavEl = document.querySelector('input[name="bav"]:checked');
+var bav = bavEl ? bavEl.value : "aucun";
+
+switch(bav){
+case "aucun":
+findings.push("PQ normal (120-200 ms)");
+break;
+case "bav1":
+findings.push("BAV 1er degre (PR > 200 ms constant)");
+findings.push("Allongement du PR sans QRS bloque");
+urgency+=1;
+break;
+case "mobitz1":
+findings.push("BAV 2e degre type Mobitz I (Wenckebach)");
+findings.push("Allongement progressif du PR puis onde P non conduite");
+urgency+=2;
+break;
+case "mobitz2":
+findings.push("BAV 2e degre type Mobitz II");
+findings.push("PR constant avec blocage brutal du QRS");
+findings.push("Risque d'evolution vers BAV complet");
+urgency+=4;
+break;
+case "bav3":
+findings.push("BAV 3e degre (bloc complet)");
+findings.push("Dissociation auriculo-ventriculaire complete");
+findings.push("URGENCE cardiologique - pacemaker temporaire");
+urgency+=5;
+break;
+}
+
+// ================= Q WAVE =================
+
+var qWave=document.getElementById("q_wave").value;
+if(qWave==="present"){
+findings.push("Onde Q presente - necrose possible");
+urgency+=2;
+}
+
+// ================= MORPHOLOGIE QRS =================
+
+var qrsMorph=document.querySelector('input[name="qrs_morpho"]:checked').value;
+
+if(qrsMorph==="M_droite"){
+findings.push("Aspect en M en V1-V2");
+findings.push("Bloc de branche droit (BBD)");
+urgency+=1;
+}
+if(qrsMorph==="W_gauche"){
+findings.push("Aspect en W en V5-V6");
+findings.push("Bloc de branche gauche (BBG)");
+urgency+=2;
+}
+
+// ================= HEMIBLOCS =================
+
+var hemibloc=document.querySelector('input[name="hemibloc"]:checked').value;
+
+if(hemibloc==="hbag"){
+findings.push("Hemibloc anterieur gauche (HBAG)");
+findings.push("Deviation axiale gauche, qR en DI-aVL, rS en DII-DIII-aVF");
+urgency+=1;
+}
+if(hemibloc==="hbpg"){
+findings.push("Hemibloc posterieur gauche (HBPG)");
+findings.push("Deviation axiale droite, rS en DI, qR en DIII-aVF");
+urgency+=1;
+}
+
+// ================= QRS DURATION =================
+
+var qrsDuration=document.getElementById("qrs_width") ? document.getElementById("qrs_width").value : "narrow";
+var qrsMorpho=document.getElementById("qrs_morpho") ? document.getElementById("qrs_morpho").value : "normal";
+
+if(qrsDuration==="intermediate"){
+findings.push("QRS intermediaire (120-140 ms)");
+}
+if(qrsDuration==="wide"){
+findings.push("QRS large (> 140 ms)");
+urgency+=2;
+}
+
+// ================= EPSILON =================
+
+var epsilon=document.getElementById("epsilon") ? document.getElementById("epsilon").value : "absent";
+if(epsilon==="present"){
+findings.push("Onde Epsilon - DVDA");
+urgency+=3;
+}
+
+// ================= QT =================
+
+var sexEl = document.getElementById("sex");
+var qtEl = document.getElementById("qt");
+var qtcEl = document.getElementById("qtc");
+var sex = sexEl ? sexEl.value : "male";
+var qt = qtEl ? (parseFloat(qtEl.value) || 0) : 0;
+var qtc = qtcEl ? qtcEl.value : "normal";
+
+if(qt>0){findings.push("QT: "+qt+" ms");}
+
+if(qtc==="prolonged"){
+findings.push("QTc long - risque torsades");
+urgency+=4;
+}
+
+// ================= ST =================
+
+var stEl = document.getElementById("st");
+var st = stEl ? stEl.value : "iso";
+
+switch(st){
+case "sous-diffus":
+findings.push("Sous-decalage ST diffus");
+findings.push("Ischemie sous-endocardique / HVG / Digitalis");
+urgency+=2;
+break;
+case "sous-local":
+findings.push("Sous-decalage ST localise");
+findings.push("Ischemie myocardique localisee");
+urgency+=3;
+break;
+case "sus-convex":
+findings.push("Sus-decalage ST convexe (dome)");
+findings.push("IDM / STEMI en cours - occlusions coronaire");
+urgency+=5;
+break;
+case "sus-concave":
+findings.push("Sus-decalage ST concave (cradle)");
+findings.push("Pericardite aigue typique");
+urgency+=3;
+break;
+case "sus-local":
+findings.push("Sus-decalage ST localise");
+findings.push("Aneurisme ventriculaire ou IDM ancien");
+urgency+=3;
+break;
+}
+
+// ================= ONDE T =================
+
+var tWaveEl = document.getElementById("t_wave");
+var tWave = tWaveEl ? tWaveEl.value : "normale";
+
+switch(tWave){
+case "normale":
+findings.push("Onde T normale");
+findings.push("Aspect classique : asymetrique, positive, amplitude 1/8 a 2/3 de R");
+break;
+case "aplatie":
+findings.push("Onde T aplatie");
+findings.push("EvOquer hypokaliemie");
+findings.push("ASSOCIE : amplitude T + onde U + sous-decalage ST");
+urgency+=2;
+break;
+case "ample":
+findings.push("Onde T ample / pointue");
+findings.push("Hyperkaliemie (T haute, etroite, symetrique - tented)");
+findings.push("ou Ischemie aigue / STEMI naissant (T hyperaque large)");
+findings.push("ou Pericardite aigue (T amples diffuses)");
+urgency+=3;
+break;
+case "negative":
+findings.push("Onde T negative");
+findings.push("Ischemie myocardique / IDM");
+findings.push("Causes : IDM, pericardite evoluee, HVG/HVD, BBG/BBD, embolie pulmonaire, myocardite");
+urgency+=2;
+break;
+}
+
+// ================= OUTPUT =================
+
+var resultHTML="<div class='rhythm-box'>";
+resultHTML+="<div class='diagnosis'>Rythme: "+rhythm+"</div>";
+
+if(rhythmUrgency>=5){
+resultHTML+="<div class='diagnosis diagnostic-urgent'>ARRET CARDIAQUE / FV / TV</div>";
+}
+
+resultHTML+="</div>";
+
+resultHTML+="<div class='findings'><ul>";
+for(var i=0;i<findings.length;i++){
+resultHTML+="<li>"+findings[i]+"</li>";
+}
+resultHTML+="</ul></div>";
+
+if(urgency>=8 || rhythmUrgency>=5){
+resultHTML+="<div class='urgency-red'>URGENCE VITALE</div>";
+}
+else if(urgency>=4){
+resultHTML+="<div class='urgency-orange'>URGENCE CARDIAQUE</div>";
+}
+else{
+resultHTML+="<div class='urgency-green'>ECG STABLE</div>";
+}
+
+resultHTML+="<p><strong>Score:</strong> "+urgency+"</p>";
+
+document.getElementById("result").innerHTML=resultHTML;
+
+}
+
+</script>
+
+</body>
+
+</html>
