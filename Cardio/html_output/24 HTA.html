@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24 HTA - Cours de Cardiologie</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
+        .sidebar { background: linear-gradient(180deg, #1a365d 0%, #2c5282 100%); min-height: 100vh; }
+        .sidebar a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 10px 15px; display: block; border-radius: 5px; margin-bottom: 5px; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.2); color: white; }
+        .content { background: white; border-radius: 10px; padding: 30px; margin: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .course-title { color: #1a365d; border-bottom: 3px solid #2c5282; padding-bottom: 10px; margin-bottom: 20px; }
+        .course-content h1 { font-size: 1.8rem; color: #2c5282; margin-top: 25px; }
+        .course-content h2 { font-size: 1.5rem; color: #2b6cb0; margin-top: 20px; }
+        .course-content h3 { font-size: 1.2rem; color: #3182ce; margin-top: 15px; }
+        .course-content p { line-height: 1.7; text-align: justify; }
+        .course-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .course-content table { width: 100%; margin: 15px 0; }
+        .course-content table th { background: #2c5282; color: white; padding: 12px; }
+        .course-content table td { padding: 10px; border: 1px solid #e2e8f0; }
+        .course-content ul, .course-content ol { margin: 10px 0; padding-left: 25px; }
+        .course-content li { margin: 5px 0; }
+        .info-box { background: #ebf8ff; border-left: 4px solid #3182ce; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        .warning-box { background: #fffaf0; border-left: 4px solid #dd6b20; padding: 15px; margin: 15px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-lg-2 sidebar p-3">
+                <h4 class="text-white mb-4"><i class="bi bi-heart-pulse"></i> Cardiologie</h4>
+                <nav><a href="1 ECG NORMAL _ PATHO.html" class="">1 ECG NORMAL _ PATHO</a>
+<a href="10 INSUFFISANCE CARDIAQUE.html" class="">10 INSUFFISANCE CARDIAQUE</a>
+<a href="11 RAA.html" class="">11 RAA</a>
+<a href="12 Endocardites infectieuses.html" class="">12 Endocardites infectieuses</a>
+<a href="13 Rétrécissement mitral.html" class="">13 Rétrécissement mitral</a>
+<a href="14 Insuffisance mitrale.html" class="">14 Insuffisance mitrale</a>
+<a href="15 Rétrécissement aortique.html" class="">15 Rétrécissement aortique</a>
+<a href="16 Insuffisance aortique.html" class="">16 Insuffisance aortique</a>
+<a href="17Péricardite aigue.html" class="">17Péricardite aigue</a>
+<a href="18 Péricardite chronique.html" class="">18 Péricardite chronique</a>
+<a href="19 SCA.html" class="">19 SCA</a>
+<a href="2 LES DIURETIQUES.html" class="">2 LES DIURETIQUES</a>
+<a href="20 Thromboses veineuses des membres inferieur.html" class="">20 Thromboses veineuses des membres inferieur</a>
+<a href="21 Artériopathies des membres inférieurs.html" class="">21 Artériopathies des membres inférieurs</a>
+<a href="22 OBLITERATIONS ARTERIELLES AIGUES DES MEMBRES IN.html" class="">22 OBLITERATIONS ARTERIELLES AIGUES DES MEMBRES INFERIEURS</a>
+<a href="23 Cœur pulmonaire chronique CPC.html" class="">23 Cœur pulmonaire chronique CPC</a>
+<a href="24 HTA.html" class="active">24 HTA</a>
+<a href="25 LA GROSSESSE CHEZ LA CARDIAQUE.html" class="">25 LA GROSSESSE CHEZ LA CARDIAQUE</a>
+<a href="26 Surveillance opérés du coeur.html" class="">26 Surveillance opérés du coeur</a>
+<a href="27 LES CARDIOMYOPATHIES.html" class="">27 LES CARDIOMYOPATHIES</a>
+<a href="28 Cardiopathies congénitales.html" class="">28 Cardiopathies congénitales</a>
+<a href="3 Les tonicardiaques.html" class="">3 Les tonicardiaques</a>
+<a href="4 LES VASODILATATEURS.html" class="">4 LES VASODILATATEURS</a>
+<a href="5 LES ANTI-ARYTHMIQUES.html" class="">5 LES ANTI-ARYTHMIQUES</a>
+<a href="6 Anti-thrombotique et thrombolytique.html" class="">6 Anti-thrombotique et thrombolytique</a>
+<a href="7 TROUBLES DU RYTHME.html" class="">7 TROUBLES DU RYTHME</a>
+<a href="9 Choc et collapsus.html" class="">9 Choc et collapsus</a>
+<a href="Choc et collapsus.html" class="">Choc et collapsus</a>
+<a href="Endocardites infectieuses.html" class="">Endocardites infectieuses</a>
+<a href="L.html" class="">L</a>
+<a href="LES VASODILATATEURS.html" class="">LES VASODILATATEURS</a>
+<a href="Le rhumatisme articulaire aigue et ses complicatio.html" class="">Le rhumatisme articulaire aigue et ses complications cardiaques</a>
+<a href="Les tonicardiaques.html" class="">Les tonicardiaques</a>
+<a href="Péricardite aigue.html" class="">Péricardite aigue</a>
+<a href="Péricardite chronique.html" class="">Péricardite chronique</a>
+<a href="Surveillance d.html" class="">Surveillance d</a>
+<a href="Thromboses veineuses des membres inferieur.html" class="">Thromboses veineuses des membres inferieur</a></nav>
+            </div>
+            <div class="col-md-9 col-lg-10">
+                <div class="content">
+                    <h1 class="course-title">24 HTA</h1>
+                    <div class="course-content"><h3>23 HYPERTENSION ARTERIELLE</h3>
+<p>définit par  PAS ≥ 140  mmHg, PAD ≥ 90 mmHg</p>
+<table class='table table-striped'>
+<tr>
+<td></td>
+<td>PAS (mmHg)</td>
+<td>PAD (mmHg)</td>
+</tr>
+<tr>
+<td>optimale</td>
+<td><120</td>
+<td><80</td>
+</tr>
+<tr>
+<td>Normale</td>
+<td>120-129</td>
+<td>80-84</td>
+</tr>
+<tr>
+<td>Normale haute</td>
+<td>130-139</td>
+<td>85-89</td>
+</tr>
+<tr>
+<td>HTA grade 1</td>
+<td>140-159</td>
+<td>90-99</td>
+</tr>
+<tr>
+<td>HTA grade 2</td>
+<td>160-179</td>
+<td>100-109</td>
+</tr>
+<tr>
+<td>HTA grade 3</td>
+<td>≥ 180</td>
+<td>≥110 </td>
+</tr>
+<tr>
+<td>HTA systolique isolée </td>
+<td>> 140</td>
+<td><90</td>
+</tr>
+<tr>
+<td>PAD = élément le plus important avant 50ans / PAS = élément le plus important après 50ans </td>
+</tr>
+</table>
+<h4>Etiologies :</h4>
+<p>HTA essentielle (95%)</p>
+<h4>Autres causes (4%) :</h4>
+<h4>origine rénale :</h4>
+<p>glomérulopathie</p>
+<p>néphropathie interstitielle chronique</p>
+<p>néphropathie vasculaire, polykystose rénale</p>
+<p>atrophie rénale unilatérale</p>
+<p>tumeurs rénale, TBK rénale</p>
+<p>obstruction urétérale</p>
+<p>origine vasculaire</p>
+<p>sténose de l’artère rénale</p>
+<p>échec au TRT bien conduit</p>
+<p>souffle sys à l’auscultation abdominale, IR sans étiologie déterminée</p>
+<p>DC : echo doppler, UIV, dosage de la rinine dans les veines rénales</p>
+<p>TRT : angioplastie, chirurgie</p>
+<p>grossesse</p>
+<h4>dans 1% des cas :</h4>
+<h4>origine endocrinienne :</h4>
+<p>adénome de Conn</p>
+<p>phéochromocytome</p>
+<p>cushing</p>
+<p>hyperaldostéronisme primaire</p>
+<p>tumeurs à rénine</p>
+<p>coarctation de l’aorte</p>
+<p>absence de pouls fémoraux, SS le long de la colonne vertébrale</p>
+<p>DC : TLT (érosion costale), écho doppler ou angiographie</p>
+<p>TRT  chirurgie</p>
+<p>étiologie médicamenteuse</p>
+<p>oestroprogéstatifs, AINS, corticoïdes, antihistaminique, sympatholytiques, réglisse</p>
+<h4>Facteurs favorisants :</h4>
+<p>diabète, obésité, abus d’alcool, sédentarité, tabac, consommation exagérée de Na, HTA familiale</p>
+<h4>Physiopathologie :</h4>
+<p>rôle du rein et du sel</p>
+<p>système rénine angiotensine : angiotensine II vasoconstriction 10x plus puissante que l’adrénaline</p>
+<p>système dépresseur peut être déficient : kinine kallicreine, PG1-PG2, facteur natriurétique atrial, dopamine rénale</p>
+<p>système vasopresseur : le systeme sympathique, ADH, serotonine, thromboxane A2</p>
+<p>facteurs génétiques</p>
+<p>carence en Ca diminue la réponse contractile des fibres musculaires</p>
+<p>la carence en Mg potentialise l’effet de l’angiotensine</p>
+<h4>Clinique :</h4>
+<p>céphalée, scotomes, acouphène, vertige, palpitation, polyurie, pollakiurie</p>
+<p>complications  inaugurales : épistaxis, AVC, IDM, OAP, IR, cécité…</p>
+<h4>Diagnostic :</h4>
+<p>repose sur la mesure de la pression artérielle</p>
+<p>c’est la constatation de mesures tensionnelle élevées à plusieurs reprises (3x), à plusieurs jours d’intervalle, par la même personne, même appareil de mesure, même conditions</p>
+<p>l’auto-mesure : 3 mesure successive (position assises), 2 séquence par jours (matin et soir), 3jrs au moins dans la semaine</p>
+<p>les chiffres tensionnelles diminuent de 10% pdt le sommeil</p>
+<h4>Examens complémentaires :</h4>
+<p>glycémie à jeune, bilan lipidique, urée, créat, ionogramme, Hb, analyse d’urine</p>
+<p>ECG à la recherche de retentissement de l’HTA (HVG, signes ischémiques, troubles du rythme)</p>
+<p>TLT : apprécie la silhouette cardiaque et recherche des signes d’œdème</p>
+<p>Echocardiographie</p>
+<p>Fond d’œil : signes de rétinopathie hypertensive de KIRKENDALL</p>
+<table class='table table-striped'>
+<tr>
+<td>stades</td>
+<td>HTA</td>
+<td>Artériosclérose </td>
+</tr>
+<tr>
+<td>Stade I</td>
+<td>Rétrécissement artériel diffus </td>
+<td>Signe du croisement</td>
+</tr>
+<tr>
+<td>Stade II</td>
+<td>Exsudats cotonneux</td>
+<td>Rétrécissement artériel localisé </td>
+</tr>
+<tr>
+<td>Stade III</td>
+<td>Œdème papillaire</td>
+<td>Pré thrombose ou thrombose vasculaire. Engrainement artériel </td>
+</tr>
+</table>
+<h4>Formes clinique :</h4>
+<h4>HTA blouse blanche :</h4>
+<p>PA > 140/90 mmHg au cabinet médicale, < 135/85mmHg par MAPA</p>
+<p>Prévalence 20%</p>
+<h4>HTA masquée :</h4>
+<p>PA élevée en dehors du cabinet médical</p>
+<h4>HTA maligne :</h4>
+<p>HTA sévère d’apparition récente, pronostic vital mis en jeu</p>
+<p>HTA du sujet âgé</p>
+<p>HTA et grossesse</p>
+<p>PA > 140/85 mmHg</p>
+<p>Toxémie gravidique, HTA préexistante révélée par la grossesse, ou chronique aggravée par la grossesse</p>
+<h4>HTA résistante :</h4>
+<p>l faut rechercher une mauvaise observance du TRT, interférence agoniste (AINS, alcool, gain de poids important, dépression)</p>
+<h4>Traitement :</h4>
+<p>TRT à vie</p>
+<p>TRT des facteurs de risque cardio-vasculaire</p>
+<table class='table table-striped'>
+<tr>
+<td></td>
+<td>Risque CV faible groupe APas de FDR (HTA isolée)</td>
+<td>Risque CV modérégroupe B1 FDR (sauf diabète)</td>
+<td>Risque CV élevé groupe CAtteinte d’un organe cible ou diabète +/- FDR</td>
+</tr>
+<tr>
+<td>PAS : 130-139PAD: 90-99</td>
+<td>RHD seules</td>
+<td>RHD seules </td>
+<td>RHD + médicaments</td>
+</tr>
+<tr>
+<td>PAS : 140-159</td>
+<td>RHD seules pdt 12mois </td>
+<td>RHD seules pdt 6mois</td>
+<td>RHD + médicaments </td>
+</tr>
+<tr>
+<td>PAS > 160PAD > 100</td>
+<td>RHD + médicaments</td>
+<td>RHD + médicaments</td>
+<td>RHD + médicaments</td>
+</tr>
+</table>
+<h4>objectif :</h4>
+<p>PA < 135/85 mmHg chez le diabétique</p>
+<p>PA < 125/85 mmHg chez l’IR</p>
+<p>PA < 140/90 pour les autres hypertendus</p>
+<p>médicaments antihypertenseurs de première intension</p>
+<p>diurétique thiazidique +++ (Fludex) cout journalier le plus faible, spironolactone, furosémide</p>
+<p>inhibiteurs calcique (amlor, tildiem, loxen)</p>
+<p>IEC (lopril)</p>
+<p>Antagoniste de l’angiotensine II (ARA II) : (tareg, aprovel)</p>
+<p>Autres : antihypertenseurs centraux (aldomet), alpha bloquant (minipress)</p>
+<table class='table table-striped'>
+<tr>
+<td></td>
+<td>1ère intention </td>
+<td>2ème intention </td>
+<td>A éviter </td>
+</tr>
+<tr>
+<td>Sujet âgé </td>
+<td>Diurétiques, BB</td>
+<td>IEC, anti Ca</td>
+<td></td>
+</tr>
+<tr>
+<td>ménopause</td>
+<td>Diurétiques</td>
+<td>BB</td>
+<td></td>
+</tr>
+<tr>
+<td>Ethnie noire </td>
+<td>Diurétique </td>
+<td>Anti Ca </td>
+<td>BB (sauf atteinte coronarienne)</td>
+</tr>
+</table>
+<p>Femme enceinte</p>
+<h4>1er trimestre :</h4>
+<p>Clonidine (aldomet), dihydralazine</p>
+<p>Avortement thérapeutique</p>
+<p>2ème trimestre</p>
+<p>TRT habituel de l’HTA</p>
+<p>Si échec accouchement prématuré</p>
+<p>En cas d’éclampsie</p>
+<p>TRT habituel des AVC</p>
+<p>IR : diurétique de l’anse</p>
+<p>Diabète avec protéinurie : IEC</p>
+<p>Dyslipidémie : alpha bloquant</p>
+<h3>CAT :</h3>
+<p>mono thérapie ou bithérapie à faible dose, en cas d’échec</p>
+<p>s’assuré de la bonne observance du TRT sinon</p>
+<p>augmenté la posologie</p>
+<p>changer la classe thérapeutique</p>
+<p>ajouté un médicament à effets additifs</p>
+<p>Notion de panier thérapeutique : action hypotensive comparable pour les médicaments d’un même panier</p>
+<p>panier 1 : IEC, BB, ARA 2</p>
+<p>panier 2 : antagoniste calcique, diurétique</p>
+<p>aspirine, statine en adjonction</p>
+<h4>suivie :</h4>
+<p>HTA légère à modéré : 1x/an</p>
+<p>HTA sévère : tous les 6mois</p>
+<h3>23 HYPERTENSION ARTERIELLE</h3>
+<p>définit par  PAS ≥ 140  mmHg, PAD ≥ 90 mmHg</p>
+<h4>Etiologies :</h4>
+<p>HTA essentielle (95%)</p>
+<h4>Autres causes (4%) :</h4>
+<h4>origine rénale :</h4>
+<p>glomérulopathie</p>
+<p>néphropathie interstitielle chronique</p>
+<p>néphropathie vasculaire, polykystose rénale</p>
+<p>atrophie rénale unilatérale</p>
+<p>tumeurs rénale, TBK rénale</p>
+<p>obstruction urétérale</p>
+<p>origine vasculaire</p>
+<p>sténose de l’artère rénale</p>
+<p>échec au TRT bien conduit</p>
+<p>souffle sys à l’auscultation abdominale, IR sans étiologie déterminée</p>
+<p>DC : echo doppler, UIV, dosage de la rinine dans les veines rénales</p>
+<p>TRT : angioplastie, chirurgie</p>
+<p>grossesse</p>
+<h4>dans 1% des cas :</h4>
+<h4>origine endocrinienne :</h4>
+<p>adénome de Conn</p>
+<p>phéochromocytome</p>
+<p>cushing</p>
+<p>hyperaldostéronisme primaire</p>
+<p>tumeurs à rénine</p>
+<p>coarctation de l’aorte</p>
+<p>absence de pouls fémoraux, SS le long de la colonne vertébrale</p>
+<p>DC : TLT (érosion costale), écho doppler ou angiographie</p>
+<p>TRT  chirurgie</p>
+<p>étiologie médicamenteuse</p>
+<p>oestroprogéstatifs, AINS, corticoïdes, antihistaminique, sympatholytiques, réglisse</p>
+<h4>Facteurs favorisants :</h4>
+<p>diabète, obésité, abus d’alcool, sédentarité, tabac, consommation exagérée de Na, HTA familiale</p>
+<h4>Physiopathologie :</h4>
+<p>rôle du rein et du sel</p>
+<p>système rénine angiotensine : angiotensine II vasoconstriction 10x plus puissante que l’adrénaline</p>
+<p>système dépresseur peut être déficient : kinine kallicreine, PG1-PG2, facteur natriurétique atrial, dopamine rénale</p>
+<p>système vasopresseur : le systeme sympathique, ADH, serotonine, thromboxane A2</p>
+<p>facteurs génétiques</p>
+<p>carence en Ca diminue la réponse contractile des fibres musculaires</p>
+<p>la carence en Mg potentialise l’effet de l’angiotensine</p>
+<h4>Clinique :</h4>
+<p>céphalée, scotomes, acouphène, vertige, palpitation, polyurie, pollakiurie</p>
+<p>complications  inaugurales : épistaxis, AVC, IDM, OAP, IR, cécité…</p>
+<h4>Diagnostic :</h4>
+<p>repose sur la mesure de la pression artérielle</p>
+<p>c’est la constatation de mesures tensionnelle élevées à plusieurs reprises (3x), à plusieurs jours d’intervalle, par la même personne, même appareil de mesure, même conditions</p>
+<p>l’auto-mesure : 3 mesure successive (position assises), 2 séquence par jours (matin et soir), 3jrs au moins dans la semaine</p>
+<p>les chiffres tensionnelles diminuent de 10% pdt le sommeil</p>
+<h4>Examens complémentaires :</h4>
+<p>glycémie à jeune, bilan lipidique, urée, créat, ionogramme, Hb, analyse d’urine</p>
+<p>ECG à la recherche de retentissement de l’HTA (HVG, signes ischémiques, troubles du rythme)</p>
+<p>TLT : apprécie la silhouette cardiaque et recherche des signes d’œdème</p>
+<p>Echocardiographie</p>
+<p>Fond d’œil : signes de rétinopathie hypertensive de KIRKENDALL</p>
+<h4>Formes clinique :</h4>
+<h4>HTA blouse blanche :</h4>
+<p>PA > 140/90 mmHg au cabinet médicale, < 135/85mmHg par MAPA</p>
+<p>Prévalence 20%</p>
+<h4>HTA masquée :</h4>
+<p>PA élevée en dehors du cabinet médical</p>
+<h4>HTA maligne :</h4>
+<p>HTA sévère d’apparition récente, pronostic vital mis en jeu</p>
+<p>HTA du sujet âgé</p>
+<p>HTA et grossesse</p>
+<p>PA > 140/85 mmHg</p>
+<p>Toxémie gravidique, HTA préexistante révélée par la grossesse, ou chronique aggravée par la grossesse</p>
+<h4>HTA résistante :</h4>
+<p>l faut rechercher une mauvaise observance du TRT, interférence agoniste (AINS, alcool, gain de poids important, dépression)</p>
+<h4>Traitement :</h4>
+<p>TRT à vie</p>
+<p>TRT des facteurs de risque cardio-vasculaire</p>
+<h4>objectif :</h4>
+<p>PA < 135/85 mmHg chez le diabétique</p>
+<p>PA < 125/85 mmHg chez l’IR</p>
+<p>PA < 140/90 pour les autres hypertendus</p>
+<p>médicaments antihypertenseurs de première intension</p>
+<p>diurétique thiazidique +++ (Fludex) cout journalier le plus faible, spironolactone, furosémide</p>
+<p>inhibiteurs calcique (amlor, tildiem, loxen)</p>
+<p>IEC (lopril)</p>
+<p>Antagoniste de l’angiotensine II (ARA II) : (tareg, aprovel)</p>
+<p>Autres : antihypertenseurs centraux (aldomet), alpha bloquant (minipress)</p>
+<p>Femme enceinte</p>
+<h4>1er trimestre :</h4>
+<p>Clonidine (aldomet), dihydralazine</p>
+<p>Avortement thérapeutique</p>
+<p>2ème trimestre</p>
+<p>TRT habituel de l’HTA</p>
+<p>Si échec accouchement prématuré</p>
+<p>En cas d’éclampsie</p>
+<p>TRT habituel des AVC</p>
+<p>IR : diurétique de l’anse</p>
+<p>Diabète avec protéinurie : IEC</p>
+<p>Dyslipidémie : alpha bloquant</p>
+<h3>CAT :</h3>
+<p>mono thérapie ou bithérapie à faible dose, en cas d’échec</p>
+<p>s’assuré de la bonne observance du TRT sinon</p>
+<p>augmenté la posologie</p>
+<p>changer la classe thérapeutique</p>
+<p>ajouté un médicament à effets additifs</p>
+<p>Notion de panier thérapeutique : action hypotensive comparable pour les médicaments d’un même panier</p>
+<p>panier 1 : IEC, BB, ARA 2</p>
+<p>panier 2 : antagoniste calcique, diurétique</p>
+<p>aspirine, statine en adjonction</p>
+<h4>suivie :</h4>
+<p>HTA légère à modéré : 1x/an</p>
+<p>HTA sévère : tous les 6mois</p>
+<table class='table table-striped'>
+<tr>
+<td></td>
+<td>PAS (mmHg)</td>
+<td>PAD (mmHg)</td>
+</tr>
+<tr>
+<td>optimale</td>
+<td><120</td>
+<td><80</td>
+</tr>
+<tr>
+<td>Normale</td>
+<td>120-129</td>
+<td>80-84</td>
+</tr>
+<tr>
+<td>Normale haute</td>
+<td>130-139</td>
+<td>85-89</td>
+</tr>
+<tr>
+<td>HTA grade 1</td>
+<td>140-159</td>
+<td>90-99</td>
+</tr>
+<tr>
+<td>HTA grade 2</td>
+<td>160-179</td>
+<td>100-109</td>
+</tr>
+<tr>
+<td>HTA grade 3</td>
+<td>≥ 180</td>
+<td>≥110</td>
+</tr>
+<tr>
+<td>HTA systolique isolée</td>
+<td>> 140</td>
+<td><90</td>
+</tr>
+<tr>
+<td>PAD = élément le plus important avant 50ans / PAS = élément le plus important après 50ans</td>
+<td>PAD = élément le plus important avant 50ans / PAS = élément le plus important après 50ans</td>
+<td>PAD = élément le plus important avant 50ans / PAS = élément le plus important après 50ans</td>
+</tr>
+</table>
+<table class='table table-striped'>
+<tr>
+<td>stades</td>
+<td>HTA</td>
+<td>Artériosclérose</td>
+</tr>
+<tr>
+<td>Stade I</td>
+<td>Rétrécissement artériel diffus</td>
+<td>Signe du croisement</td>
+</tr>
+<tr>
+<td>Stade II</td>
+<td>Exsudats cotonneux</td>
+<td>Rétrécissement artériel localisé</td>
+</tr>
+<tr>
+<td>Stade III</td>
+<td>Œdème papillaire</td>
+<td>Pré thrombose ou thrombose vasculaire. Engrainement artériel</td>
+</tr>
+</table>
+<table class='table table-striped'>
+<tr>
+<td></td>
+<td>Risque CV faible 
+groupe A
+Pas de FDR (HTA isolée)</td>
+<td>Risque CV modéré
+groupe B
+1 FDR (sauf diabète)</td>
+<td>Risque CV élevé groupe C
+Atteinte d’un organe cible ou diabète +/- FDR</td>
+</tr>
+<tr>
+<td>PAS : 130-139
+PAD: 90-99</td>
+<td>RHD seules</td>
+<td>RHD seules</td>
+<td>RHD + médicaments</td>
+</tr>
+<tr>
+<td>PAS : 140-159</td>
+<td>RHD seules pdt 12mois</td>
+<td>RHD seules pdt 6mois</td>
+<td>RHD + médicaments</td>
+</tr>
+<tr>
+<td>PAS > 160
+PAD > 100</td>
+<td>RHD + médicaments</td>
+<td>RHD + médicaments</td>
+<td>RHD + médicaments</td>
+</tr>
+</table>
+<table class='table table-striped'>
+<tr>
+<td></td>
+<td>1ère intention</td>
+<td>2ème intention</td>
+<td>A éviter</td>
+</tr>
+<tr>
+<td>Sujet âgé</td>
+<td>Diurétiques, BB</td>
+<td>IEC, anti Ca</td>
+<td></td>
+</tr>
+<tr>
+<td>ménopause</td>
+<td>Diurétiques</td>
+<td>BB</td>
+<td></td>
+</tr>
+<tr>
+<td>Ethnie noire</td>
+<td>Diurétique</td>
+<td>Anti Ca</td>
+<td>BB (sauf atteinte coronarienne)</td>
+</tr>
+</table></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

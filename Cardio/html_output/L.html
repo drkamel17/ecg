@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L - Cours de Cardiologie</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
+        .sidebar { background: linear-gradient(180deg, #1a365d 0%, #2c5282 100%); min-height: 100vh; }
+        .sidebar a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 10px 15px; display: block; border-radius: 5px; margin-bottom: 5px; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.2); color: white; }
+        .content { background: white; border-radius: 10px; padding: 30px; margin: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .course-title { color: #1a365d; border-bottom: 3px solid #2c5282; padding-bottom: 10px; margin-bottom: 20px; }
+        .course-content h1 { font-size: 1.8rem; color: #2c5282; margin-top: 25px; }
+        .course-content h2 { font-size: 1.5rem; color: #2b6cb0; margin-top: 20px; }
+        .course-content h3 { font-size: 1.2rem; color: #3182ce; margin-top: 15px; }
+        .course-content p { line-height: 1.7; text-align: justify; }
+        .course-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .course-content table { width: 100%; margin: 15px 0; }
+        .course-content table th { background: #2c5282; color: white; padding: 12px; }
+        .course-content table td { padding: 10px; border: 1px solid #e2e8f0; }
+        .course-content ul, .course-content ol { margin: 10px 0; padding-left: 25px; }
+        .course-content li { margin: 5px 0; }
+        .info-box { background: #ebf8ff; border-left: 4px solid #3182ce; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        .warning-box { background: #fffaf0; border-left: 4px solid #dd6b20; padding: 15px; margin: 15px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-lg-2 sidebar p-3">
+                <h4 class="text-white mb-4"><i class="bi bi-heart-pulse"></i> Cardiologie</h4>
+                <nav><a href="1 ECG NORMAL _ PATHO.html" class="">1 ECG NORMAL _ PATHO</a>
+<a href="10 INSUFFISANCE CARDIAQUE.html" class="">10 INSUFFISANCE CARDIAQUE</a>
+<a href="11 RAA.html" class="">11 RAA</a>
+<a href="12 Endocardites infectieuses.html" class="">12 Endocardites infectieuses</a>
+<a href="13 Rétrécissement mitral.html" class="">13 Rétrécissement mitral</a>
+<a href="14 Insuffisance mitrale.html" class="">14 Insuffisance mitrale</a>
+<a href="15 Rétrécissement aortique.html" class="">15 Rétrécissement aortique</a>
+<a href="16 Insuffisance aortique.html" class="">16 Insuffisance aortique</a>
+<a href="17Péricardite aigue.html" class="">17Péricardite aigue</a>
+<a href="18 Péricardite chronique.html" class="">18 Péricardite chronique</a>
+<a href="19 SCA.html" class="">19 SCA</a>
+<a href="2 LES DIURETIQUES.html" class="">2 LES DIURETIQUES</a>
+<a href="20 Thromboses veineuses des membres inferieur.html" class="">20 Thromboses veineuses des membres inferieur</a>
+<a href="21 Artériopathies des membres inférieurs.html" class="">21 Artériopathies des membres inférieurs</a>
+<a href="22 OBLITERATIONS ARTERIELLES AIGUES DES MEMBRES IN.html" class="">22 OBLITERATIONS ARTERIELLES AIGUES DES MEMBRES INFERIEURS</a>
+<a href="23 Cœur pulmonaire chronique CPC.html" class="">23 Cœur pulmonaire chronique CPC</a>
+<a href="24 HTA.html" class="">24 HTA</a>
+<a href="25 LA GROSSESSE CHEZ LA CARDIAQUE.html" class="">25 LA GROSSESSE CHEZ LA CARDIAQUE</a>
+<a href="26 Surveillance opérés du coeur.html" class="">26 Surveillance opérés du coeur</a>
+<a href="27 LES CARDIOMYOPATHIES.html" class="">27 LES CARDIOMYOPATHIES</a>
+<a href="28 Cardiopathies congénitales.html" class="">28 Cardiopathies congénitales</a>
+<a href="3 Les tonicardiaques.html" class="">3 Les tonicardiaques</a>
+<a href="4 LES VASODILATATEURS.html" class="">4 LES VASODILATATEURS</a>
+<a href="5 LES ANTI-ARYTHMIQUES.html" class="">5 LES ANTI-ARYTHMIQUES</a>
+<a href="6 Anti-thrombotique et thrombolytique.html" class="">6 Anti-thrombotique et thrombolytique</a>
+<a href="7 TROUBLES DU RYTHME.html" class="">7 TROUBLES DU RYTHME</a>
+<a href="9 Choc et collapsus.html" class="">9 Choc et collapsus</a>
+<a href="Choc et collapsus.html" class="">Choc et collapsus</a>
+<a href="Endocardites infectieuses.html" class="">Endocardites infectieuses</a>
+<a href="L.html" class="active">L</a>
+<a href="LES VASODILATATEURS.html" class="">LES VASODILATATEURS</a>
+<a href="Le rhumatisme articulaire aigue et ses complicatio.html" class="">Le rhumatisme articulaire aigue et ses complications cardiaques</a>
+<a href="Les tonicardiaques.html" class="">Les tonicardiaques</a>
+<a href="Péricardite aigue.html" class="">Péricardite aigue</a>
+<a href="Péricardite chronique.html" class="">Péricardite chronique</a>
+<a href="Surveillance d.html" class="">Surveillance d</a>
+<a href="Thromboses veineuses des membres inferieur.html" class="">Thromboses veineuses des membres inferieur</a></nav>
+            </div>
+            <div class="col-md-9 col-lg-10">
+                <div class="content">
+                    <h1 class="course-title">L</h1>
+                    <div class="course-content"><h3>L'INSUFFISANCE CORONARIENNE</h3>
+<h4>- terme qui englobe :</h4>
+<p>> l'insuffisance coronaire chronique : Angor d'effort stable dont</p>
+<p>le mécanisme est le rétrécissement  coronaire généralement par le</p>
+<p>développement d'une plaque d'athérome</p>
+<p>> l'insuffisance coronaire aigue : SCA dont le mécanisme est la rupture</p>
+<p>d'une plaque d'athérome avec formation de thrombus ŕ l'origine d'une</p>
+<p>occlusion partielle (SCA, ST- = angor instable ou syndrome de menace)</p>
+<p>ou occlusion totale (SCA, ST+ « IDM »)</p>
+<p>> ischémie myocardique silencieuse</p>
+<p>> angor de Prinzmetal : vasospasme localisé de l'artčre coronaire</p>
+<p>rapidement réversible</p>
+<h4>Rappel anatomique :</h4>
+<p>La vascularisation du c?ur est assurée par les artčres coronaires qui</p>
+<p>s'organisent en 2 réseaux</p>
+<p>1- réseau coronaire gauche : né au niveau de l'aorte donne deux artčres ŕ</p>
+<h4>partir d'un tronc commun :</h4>
+<p>. l'interventriculaire antérieure (IVA) : chemine sur le sillon</p>
+<p>interventriculaire antérieur et donne des branche septales et</p>
+<p>diagonales</p>
+<p>. la circonflexe (CX) : chemine sur le sillon auriculo-</p>
+<p>ventriculaire gauche et donne des branche marginales gauche</p>
+<p>2- réseau droit : né également ŕ la partie initiale de l'aorte, chemine</p>
+<p>sur le sillon auriculo-ventriculaire droit puis se bifurque en 2</p>
+<h4>artčres :</h4>
+<p>. l'interventriculaire postérieure (IVP) chemine sur le versant</p>
+<p>postérieur d sillon interventriculaire</p>
+<p>. l'artčres rétroventriculaire gauche (RVG) : qui chemine sur la</p>
+<p>paroi postérieure du ventricule gauche</p>
+<p>Etiologies</p>
+<h4>1) athérosclérose :</h4>
+<p>- favorisée par l'âge, sexe masculin, HTA, diabčte, tabagisme,</p>
+<p>hypercholestérolémie, obésité, sédentarité, stresse, ménopause et</p>
+<p>l'hérédité</p>
+<p>- le syndrome métabolique (obésité abdominale, HTA, glycémie entre 1,1</p>
+<p>et 1,26 g/l, hyper TG ou hypo HDL)</p>
+<p>- TRT : RHD, statine, antiagrégants plaquettaire</p>
+<h4>2) organique :</h4>
+<p>- sténose fibreuse cicatricielle sur coronarite inflammatoire</p>
+<p>- spasme coronaire, malformations congénitales, compression extrinsčque</p>
+<h4>3) fonctionnelle :</h4>
+<p>- RAO, CMO, anémie sévčre</p>
+<p>- Tachycardie a fréquence trčs élevée</p>
+<h4>I) l'insuffisance coronaire chronique :</h4>
+<h4>Diagnostic :</h4>
+<p>- douleurs thoracique, rétrosternale, constrictive, irradiant vers la</p>
+<p>mâchoire, les bras survient a l'effort</p>
+<p>- disparaît au moins 5 minute aprčs l'arręt de l'effort</p>
+<h4>- classification :</h4>
+<p>. stade I : lors d'effort exceptionnel (violent)</p>
+<p>. stade II : angor lors d'effort inhabituel</p>
+<p>. stade III : angor lors des efforts courants</p>
+<p>. stade IV : angor au moindre effort, ou au repos</p>
+<h3>- ECG :</h3>
+<p>. De repos : généralement normale</p>
+<p>. A l'effort : ŕ l'épreuve d'effort => déclanchement de l'angor</p>
+<p>avec apparition d'un sous décalage ST</p>
+<p>. Signes de sévérité : angor aprčs les 1ers  paliers d'effort,</p>
+<p>sous décalage St ample, hypotension, trouble du rythme ou de la</p>
+<p>conduction</p>
+<h4>- Echo c?ur :</h4>
+<p>. de repos : généralement normale</p>
+<p>. de stresse : stresse physique ou pharmacologique (dobutamine), a</p>
+<p>la recherche d'une hypokinésie  segmentaire</p>
+<p>- scintigraphie myocardique : apprécie la perfusion myocardique =>a</p>
+<p>l'effort hypoperfusion dont l'étendu témoigne de la sévérité</p>
+<p>- coronarographie : visualise les coronaire, les sténoses, leurs sičges,</p>
+<p>longueurs, le lit d'aval</p>
+<h4>- indications :</h4>
+<p>. épreuve d'effort ECG : examen de premičre intension</p>
+<p>. écho de stresse, et scintigraphie cardiaque : examen de seconde</p>
+<p>intention en cas de ECG ininterprétable (HVG, BBG, WPW), effort</p>
+<p>physique impossible</p>
+<p>. coronarographie : en cas d'angor avec signe de sévérité dans les</p>
+<p>examen précédant, ou résistance au TRT optimal</p>
+<p>Evolution</p>
+<p>- stable sans gčne fonctionnelle sous TRT</p>
+<p>- se complique d'angor instable ou IDM</p>
+<p>- cardiomyopathie ischémique, IC</p>
+<p>- mort subite par troubles du rythme ou de la conduction</p>
+<h4>Traitement :</h4>
+<h3>- RHD</h3>
+<p>- TRT préventif : aspirine 100mg/jr + statine</p>
+<h4>- TRT anti ischémique :</h4>
+<h4>. 1er palier :</h4>
+<p>o DN ŕ action rapide en sublingual en cas de douleurs ou en</p>
+<p>prévision d'effort</p>
+<p>o BB cardio-sélectif pour maintenir une FC de repos</p>
+<p>. 2čme palier : ajouter un inhibiteur calcique</p>
+<p>. 3čme palier : DN ŕ action prolongé per os ou en patch</p>
+<p>- traitement mécanique : si signe de gravité aux examens</p>
+<p>complémentaires, échec du TRT 3čme au palier, en fonction des donnée</p>
+<p>de la coronarographie</p>
+<p>. angioplastie coronaire percutanée</p>
+<p>. pontage coronarien</p>
+<h4>II) syndrome coronarien aigue sans sus décalage du ST (SCA, ST-) :</h4>
+<p>- désigne le syndrome de menace ou l'angor instable</p>
+<p>- exclusivement due a l'athérosclérose</p>
+<p>- ischémie secondaire ŕ une obstruction subtotale d'une artčre</p>
+<p>coronaire, ou micro embolisations distales ŕ l'origine de micro foyers</p>
+<p>de nécrose pouvant évoluer vers l'infarctus microscopique</p>
+<h4>Diagnostic :</h4>
+<p>- douleurs angineuse réstrosternale survenant au repos</p>
+<p>- apparition d'un angor d'effort sévčre (de novo)</p>
+<p>- aggravation brutale d'un angor d'effort stable (crescendo)</p>
+<p>- parfois douleurs atypique</p>
+<p>- ECG : trouble de la repolarisation avec onde T (-) ou un sous décalage</p>
+<p>ST dans un territoire précis, un ECG normal n'élimine pas le DC</p>
+<p>- Biologie : discrčte élévation des troponines , Tx normale n'élimine</p>
+<p>pas le DC</p>
+<p>- Echo c?ur : peut déceler des troubles de la cinétique</p>
+<h4>Complication :</h4>
+<p>- IDM, IC, mort subite par troubles du rythme</p>
+<p>Prise en charge : (immédiate)</p>
+<p>- hospitalisation en USIC + surveillance constante</p>
+<h4>- bithérapie anti-ischémique :</h4>
+<p>. BB pour réduire la FC</p>
+<p>. DN : ŕ la seringue électrique (surveillance de la TA)</p>
+<p>- traitement anti-thrombotique : héparinothérapie pdt au moins 48h</p>
+<h4>- bithérapie d'antiagrégants plaquettaire :</h4>
+<p>. aspirine 250mg en IVD pour une action rapide puis 100mg/jr a vie</p>
+<p>. clopidogrel : 300mg dose d'attaque per os, puis 75mg/jr pdt au</p>
+<p>moins 1mois</p>
+<p>- stratification du risque : la présence d'un critčre met le patient ŕ</p>
+<p>haut risque</p>
+<p>. âge >65ans, diabčte, ATCD d'IDM</p>
+<p>. persistance ou récurrence de la douleur sous traitement</p>
+<p>. sous décalage ST a l'ECG</p>
+<p>. troponine (+)</p>
+<p>. instabilité hémodynamique ou rythmique</p>
+<p>- TRT orienté par la stratification du risque</p>
+<p>. faible risque (aucun critčre de sévérité) : maintenir le TRT 48h</p>
+<p>puis effectuer une épreuve d'effort</p>
+<p>o positive sans signes de sévérité => TRT rejoint celui de</p>
+<p>l'angor stable</p>
+<p>o positive avec signes de sévérité => TRT rejoint celui du</p>
+<p>patient ŕ haut risque</p>
+<p>o négative => reconsidérer le DC et rechercher une étiologie a la</p>
+<p>douleur</p>
+<p>. haut risque (présence d'un ou de plusieurs critčres de risque)</p>
+<p>o adjoindre un 3čme TRT antiagrégants plaquettaire (anti</p>
+<p>GPIIbIIIa) ŕ la seringue électrique</p>
+<p>o coronarographie et angioplastie avec mise en place d'un Stent</p>
+<h4>III) syndrome coronarien aigue avec sus décalage du ST (SCA, ST+), IDM :</h4>
+<p>- nécrose myocardique d'au moins 2cm2</p>
+<p>- sus décalage de ST d'au moins 2mm en précordiale ou 1mm en standard,</p>
+<p>sur au moins 2 dérivations contiguës, ou un BBG récent</p>
+<p>- Biologie : élévation des marqueurs de nécrose cardiaque (CKmb,</p>
+<p>troponines)</p>
+<h4>Diagnostic :</h4>
+<p>- douleur thoracique durant plus de 30min, ne cčde pas a la trinitrine,</p>
+<p>accompagné de malaise général, syncope, épigastralgies, dyspnée</p>
+<p>- l'interrogatoire précise une CI au TRT</p>
+<p>. risque hémorragique (aspirine, thrombolyse)</p>
+<p>. prise de viagra (DN)</p>
+<p>. asthme (BB)</p>
+<h3>- ECG :</h3>
+<p>. Dčs la premičre minute ischémie sous endocardique = ondes T (+)</p>
+<p>pointues, amples, symétriques</p>
+<p>. A partir de la 20čme minute : lésion sous épicardique = sus</p>
+<p>décalage ST englobant l'onde T, onde de Pardée</p>
+<p>. A partir de la 12čme heure : affaissement du SUS décalage,</p>
+<p>négativation des onde T, creusement des ondes Q de nécrose</p>
+<p>(persiste plusieurs année), les ondes T se repositivent  en</p>
+<p>quelque mois</p>
+<p>|Territoire anatomique        |Dérivation électrique      |Artčre coronaire       |</p>
+<p>|Antéroseptal                 |V1, V2, V3                 |IVA (souvent moyenne)  |</p>
+<p>|Apical                       |V4                         |IVA (souvent distale)  |</p>
+<p>|Latéral                      |V5-V6 (bas), D1-AVL (haut) |Marginales et          |</p>
+<p>|                             |                           |diagonales             |</p>
+<p>|Inférieur ou                 |D2, D3, AVF                |CD ou CX               |</p>
+<p>|postéro-diaphragmatique      |                           |                       |</p>
+<p>|Basal ou postéro-basal       |V7, V8, V9 + grande R en   |CD                     |</p>
+<p>|                             |V1, V2                     |                       |</p>
+<p>|Antérieur étendu             |V1 ŕ V6 + D1-AVL           |IVA (souvent proximale)|</p>
+<p>|Septal profond               |V1 ŕ V4 + D2, D3, AVF      |IVA + CD ou IVA        |</p>
+<p>|                             |                           |contournant la pointe  |</p>
+<p>|Extension VD                 |V3R, V4R                   |CD proximal            |</p>
+<p>- Biologie</p>
+<p>|Marqueur de nécrose |apparition       |pic           |duée          |sens  |spéci|</p>
+<p>|                    |                 |              |              |      |f    |</p>
+<p>|myoglobine          |1ŕ2h             |4-8h          |12ŕ24h        |+/-   |+/-  |</p>
+<p>|troponine           |2ŕ6h             |12-24h        |10-15jrs      |+++   |++   |</p>
+<p>|CKmb                |2ŕ6h             |12-24         |1-2jrs        |++    |+++  |</p>
+<p>|Isoforme des Ck     |1-4h             |4-6h          |1-2jrs        |+     |+    |</p>
+<p>|GB élevés, inflammation CRP, VS élevées, lipidémie et glycémie perturbés          |</p>
+<p>Traitement</p>
+<p>- Hospitalisation en USIC</p>
+<p>- Revascularisation idiquée dans les 12h suivant le début des douleurs</p>
+<p>> moyen</p>
+<p>- angioplastie primaire + stent + (aspirine + clopidogrel + héparine +</p>
+<p>antiGPIIbIIIa)</p>
+<p>indiquée si réalisable dans les 90min, si CI ŕ la thrombolyse, échec a</p>
+<p>la thrombolyse</p>
+<p>- fibrinolyse</p>
+<p>. streptokinase (non spécifique, allergisante) + (aspirine + HHC +</p>
+<p>héparine)</p>
+<p>. rTPA (spécifique non allergisante) + (aspirine + héparine)</p>
+<p>. tnkTPA idem rTPA</p>
+<h4>o CI :</h4>
+<p>. ATCD AVC hémorragique, chirurgie cérébrale</p>
+<p>. AVC ischémique de moins de 6mois</p>
+<p>. Dissection aortique, endocardite aigue, péricardite aigue</p>
+<p>. Chirurgie, traumatisme sévčre ou accouchement de mois de 10</p>
+<p>jrs</p>
+<p>. Rétinopathie hémorragique, UGD en évolution</p>
+<h4>o Critčres de reperfusion :</h4>
+<p>.  Sédation ou baisse rapide de la douleur</p>
+<p>. Diminution rapide du sus-décalage d'au moins 50%, ESV, RIVA</p>
+<p>. Pic précoce des CKmb et troponines</p>
+<h4>- le reste du traitement :</h4>
+<p>. aspirine ŕ la dose de charge puis 100mg ŕ vie</p>
+<p>. clopidogrel dose de (300mg) charge puis 75mg durant au moins un</p>
+<p>mois</p>
+<p>. héparine : arręt aprčs 48h (ou prolongée jusqu'ŕ la</p>
+<p>déambulation) sans relais aux AVK</p>
+<p>. morphine : 10mg en sous cutanée</p>
+<p>. DN : 1MG/h a la seringue électrique pdt 48h puis relais per os</p>
+<p>(sauf CI)</p>
+<p>. BB : per os, maintenu ŕ vie</p>
+<p>. IEC : per os ŕ débuter le lendemain, ŕ vie</p>
+<p>. Statine : ŕ vie</p>
+<h4>Evolution :</h4>
+<p>- disparition de la douleur + fičvre qui apparaît le lendemain pour</p>
+<p>durer quelque jours</p>
+<p>- ordonnance de sortie : BB, Aspirine, Statine, IEC + RHD</p>
+<h4>- les complications :</h4>
+<p>> mort subite</p>
+<p>> insuffisance cardiaque : selon la classification de KILLIP</p>
+<p>. Killip I : pas de râles crépitants</p>
+<p>. Killip II : râles crépitants ne dépassent la moitié du champ</p>
+<p>pulmonaire</p>
+<p>. Killip III : râles crépitants dépassent la moitié du champ</p>
+<p>pulmonaire -> (O2 + lasilix + DN)</p>
+<p>. Killip IV : état de choc cardiogénique par atteinte de 40% du</p>
+<p>myocarde -> (inotrope a la seringue électrique/ sonde de contre</p>
+<p>pulsion diastolique, «CI : IEC, BB, DN»)</p>
+<p>> choc vagal : surtout dans les infarctus inferieur -> atropine et</p>
+<p>remplissage si nécessaire</p>
+<p>> extension de l'infarctus au ventricule droit : surtout dans infarctus</p>
+<p>inferieur associant état de choc par adiastolie et SUS décalage sur</p>
+<p>les dérivations droites (CI : IEC, BB, DN)</p>
+<p>> troubles du rythme</p>
+<p>> troubles de la conduction</p>
+<p>> complications mécaniques</p>
+<p>. dilatation remodelage cavitaire</p>
+<p>. rupture d'une paroi libre</p>
+<p>. rupture du septum interventriculaire</p>
+<p>. rupture de pilier</p>
+<p>> complication thromboembolique</p>
+<p>. intracavitaire (akinésie)</p>
+<p>. ŕ distance (alitement et stase sanguine)</p>
+<p>> péricardite</p>
+<p>. précoce : surveillance</p>
+<p>. tardive : dans le cadre d'un syndrome inflammatoire -> AINS</p>
+<p>> complications inflammatoires tardives (3 ŕ 5 semaines)</p>
+<p>. syndrome de Dressler</p>
+<p>. syndrome épaule main : périarthrite scapulo-humérale -> AINS</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

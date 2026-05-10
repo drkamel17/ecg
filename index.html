@@ -1058,6 +1058,12 @@ function checkTech(){
 
 <button onclick="analyze()">🧠 Analyser ECG</button>
 
+<div style="margin-top:15px;text-align:center;">
+<a href="Cardio/html_output/index.html" target="_blank" style="display:inline-block;padding:12px 25px;background:#0d9488;color:white;text-decoration:none;border-radius:8px;font-weight:bold;">
+📚 Accéder aux cours de Cardiologie
+</a>
+</div>
+
 <div id="result"></div>
 
 <script>
@@ -1821,7 +1827,7 @@ break;
 // ================= OUTPUT =================
 
 var resultHTML="<div class='rhythm-box'>";
-resultHTML+="<div class='diagnosis'>Rythme: "+rhythm+"</div>";
+resultHTML+="<div class='diagnosis'><a href='Cardio/html_output/7 TROUBLES DU RYTHME.html' target='_blank' style='color:inherit;'>Rythme: "+rhythm+"</a></div>";
 
 if(rhythmUrgency>=5){
 resultHTML+="<div class='diagnosis diagnostic-urgent'>ARRET CARDIAQUE / FV / TV</div>";
@@ -1830,8 +1836,97 @@ resultHTML+="<div class='diagnosis diagnostic-urgent'>ARRET CARDIAQUE / FV / TV<
 resultHTML+="</div>";
 
 resultHTML+="<div class='findings'><ul>";
+
+// Liens vers cours pour chaque finding
+var links = {
+    // Cours 1: ECG Normal / Pathologique
+    "aVR positif": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "FC calculee": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "FC:": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "Bradycardie": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "Tachycardie": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "Rythme sinusal": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "Onde P": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "Onde P prolongee": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "Onde P haute": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "Sokolow": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "Cornell": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "Lewis": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "Gubner": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "Onde T": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "QT:": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+    "QTc long": "Cardio/html_output/1 ECG NORMAL _ PATHO.html",
+
+    // Cours 7: Troubles du rythme (inclut BBD, BBG, BAV, extrasystoles, tachycardies)
+    "Bloc de branche": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "BBD": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "BBG": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "M en V1": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "W en V5": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "Extrasystole": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "ESV": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "BAV": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "Mobitz": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "PQ normal": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "Fibrillation auriculaire": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "Flutter": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "Tachycardie jonctionnelle": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "Rythme ventriculaire": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+    "TORSADES DE POINTES": "Cardio/html_output/7 TROUBLES DU RYTHME.html",
+
+    // Cours 19: SCA (Syndrome Coronarien Aigu)
+    "STEMI": "Cardio/html_output/19 SCA.html",
+    "IDM": "Cardio/html_output/19 SCA.html",
+    "Sus-decalage ST": "Cardio/html_output/19 SCA.html",
+    "Sus-decalage ST convexe": "Cardio/html_output/19 SCA.html",
+    "Sus-decalage ST concave": "Cardio/html_output/19 SCA.html",
+    "Ischemie": "Cardio/html_output/19 SCA.html",
+    "Territoire": "Cardio/html_output/19 SCA.html",
+    "Coronaire": "Cardio/html_output/19 SCA.html",
+    "Infarctus": "Cardio/html_output/19 SCA.html",
+    "Onde Q": "Cardio/html_output/19 SCA.html",
+
+    // Cours 10: Insuffisance cardiaque (pour axe, hemiblocs)
+    "Axe automatique": "Cardio/html_output/10 INSUFFISANCE CARDIAQUE.html",
+    "Deviation axiale": "Cardio/html_output/10 INSUFFISANCE CARDIAQUE.html",
+    "Axe normal": "Cardio/html_output/10 INSUFFISANCE CARDIAQUE.html",
+    "Axe gauche": "Cardio/html_output/10 INSUFFISANCE CARDIAQUE.html",
+    "Axe droit": "Cardio/html_output/10 INSUFFISANCE CARDIAQUE.html",
+    "HBAG": "Cardio/html_output/10 INSUFFISANCE CARDIAQUE.html",
+    "HBPG": "Cardio/html_output/10 INSUFFISANCE CARDIAQUE.html",
+    "HVG": "Cardio/html_output/10 INSUFFISANCE CARDIAQUE.html",
+    "hemibloc": "Cardio/html_output/10 INSUFFISANCE CARDIAQUE.html",
+
+    // Cours 23: Coeur pulmonaire chronique (pour embolie pulmonaire)
+    "Embolie pulmonaire": "Cardio/html_output/23 Cœur pulmonaire chronique CPC.html",
+    "EP": "Cardio/html_output/23 Cœur pulmonaire chronique CPC.html",
+    "S1Q3T3": "Cardio/html_output/23 Cœur pulmonaire chronique CPC.html",
+    "axe a droite": "Cardio/html_output/23 Cœur pulmonaire chronique CPC.html",
+    "Onde P pulmonaire": "Cardio/html_output/23 Cœur pulmonaire chronique CPC.html",
+
+    // Cours 24: HTA
+    "Onde Epsilon": "Cardio/html_output/24 HTA.html",
+    "DVDA": "Cardio/html_output/24 HTA.html",
+
+    // Cours 17: Péricardite
+    "Pericardite": "Cardio/html_output/17Péricardite aigue.html",
+    "Sous-decalage ST diffus": "Cardio/html_output/17Péricardite aigue.html"
+};
+
 for(var i=0;i<findings.length;i++){
-resultHTML+="<li>"+findings[i]+"</li>";
+    var finding = findings[i];
+    var linkFound = null;
+    for(var key in links){
+        if(finding.indexOf(key) !== -1){
+            linkFound = links[key];
+            break;
+        }
+    }
+    if(linkFound){
+        resultHTML+="<li><a href='"+linkFound+"' target='_blank' style='color:#0369a1;text-decoration:underline;'>"+finding+"</a></li>";
+    } else {
+        resultHTML+="<li>"+finding+"</li>";
+    }
 }
 resultHTML+="</ul></div>";
 
